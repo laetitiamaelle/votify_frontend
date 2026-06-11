@@ -1,0 +1,219 @@
+<!-- ============================================================
+     RECHERCHER SCRUTIN — rechercher-scrutin.component.html
+     Dashboard électeur : hero, recherche, filtres, cartes scrutins,
+     section populaire, historique récent.
+     ============================================================ -->
+
+<div class="electeur-wrapper">
+
+  <!-- ══════════════════ SIDEBAR ═══════════════════════════ -->
+  <aside class="sidebar">
+    <a href="/" class="sidebar-brand">
+      <div class="sidebar-logo-icon"><i class="bi bi-check2-square"></i></div>
+      <span class="sidebar-logo-text">Votify</span>
+    </a>
+    <nav class="sidebar-nav">
+      @for (item of navItems; track item.route) {
+        <a class="sidebar-lien" [class.actif]="item.actif"
+           (click)="setOnglet(item.route)" href="javascript:void(0)">
+          <i [class]="'bi ' + item.icone"></i>
+          <span>{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+    <button class="btn-deconnexion">
+      <i class="bi bi-box-arrow-left text-danger"></i>
+      <span>Déconnexion</span>
+    </button>
+  </aside>
+
+  <!-- ══════════════════ ZONE PRINCIPALE ═══════════════════ -->
+  <div class="main-zone">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <h6 class="topbar-titre">Tableau de bord</h6>
+      <div class="topbar-droite">
+        <div class="recherche-box-top">
+          <i class="bi bi-search"></i>
+          <input type="text" [(ngModel)]="recherche" placeholder="Rechercher...">
+        </div>
+        <button class="btn-notif"><i class="bi bi-bell"></i></button>
+        <div class="avatar-top">ÉL</div>
+      </div>
+    </header>
+
+    <main class="main-contenu">
+
+      <!-- ══════════ HERO SECTION ════════════════════════ -->
+      <section class="hero-electeur mb-4">
+        <h1 class="hero-titre">
+          Quel sera votre prochain <span class="hero-accent">vote ?</span>
+        </h1>
+        <p class="hero-sous-titre">
+          Explorez les scrutins en cours dans votre université, votre entreprise ou votre ville.
+          Votre voix compte, partout.
+        </p>
+
+        <!-- Barre de recherche principale -->
+        <div class="barre-hero">
+          <i class="bi bi-search text-muted"></i>
+          <input
+            type="text"
+            [(ngModel)]="recherche"
+            placeholder="Rechercher une élection, une organisation...">
+        </div>
+
+        <!-- Filtres catégories -->
+        <div class="categories-wrap">
+          @for (cat of categories; track cat.key) {
+            <button
+              class="btn-categorie"
+              [class.actif]="categorieActive === cat.key"
+              (click)="setCategorie(cat.key)">
+              {{ cat.label }}
+            </button>
+          }
+        </div>
+      </section>
+
+      <!-- ══════════ SCRUTINS RECOMMANDÉS ═══════════════ -->
+      <section class="mb-5">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+          <div>
+            <h4 class="section-titre">Scrutins recommandés</h4>
+            <p class="section-desc">
+              Nous avons trouvé {{ scrutinsFiltres.length }} scrutin(s) correspondant à vos critères.
+            </p>
+          </div>
+          <!-- Filtres statut -->
+          <div class="filtres-statut">
+            @for (f of filtresStatut; track f) {
+              <button
+                class="btn-filtre-statut"
+                [class.actif]="filtreStatut === f"
+                (click)="setFiltreStatut(f)">
+                {{ f }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- Grille de cartes scrutins -->
+        <div class="row g-3">
+          @for (s of scrutinsFiltres; track s.id) {
+            <div class="col-sm-6 col-lg-4">
+              <div class="scrutin-card">
+
+                <!-- Vignette colorée -->
+                <div class="scrutin-vignette" [style.background]="s.couleurVignette">
+                  <span class="badge-statut" [ngClass]="'statut-' + s.statut">
+                    {{ getLibelleStatut(s.statut) }}
+                  </span>
+                  <div class="vignette-icone">
+                    <i [class]="'bi ' + s.iconeVignette"></i>
+                  </div>
+                </div>
+
+                <!-- Infos scrutin -->
+                <div class="scrutin-body">
+                  <!-- Organisation -->
+                  <div class="org-ligne">
+                    <div class="org-avatar" [style.background]="s.orgCouleur">
+                      {{ s.orgInitiales }}
+                    </div>
+                    <span class="org-nom">{{ s.organisation }}</span>
+                  </div>
+
+                  <h6 class="scrutin-titre">{{ s.titre }}</h6>
+
+                  <div class="scrutin-meta">
+                    <span><i class="bi bi-calendar3 me-1"></i>{{ s.dateFin }}</span>
+                    <span><i class="bi bi-people me-1"></i>{{ s.participants | number }} participants</span>
+                  </div>
+
+                  <!-- Bouton action selon statut -->
+                  <button class="btn-action-scrutin" [ngClass]="'btn-' + s.statut">
+                    {{ getLibelleBouton(s.statut) }}
+                    @if (s.statut !== 'termine') {
+                      <i class="bi bi-arrow-right ms-2"></i>
+                    }
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+
+          @if (scrutinsFiltres.length === 0) {
+            <div class="col-12 text-center py-5 text-muted">
+              <i class="bi bi-search fs-2 d-block mb-2 opacity-50"></i>
+              Aucun scrutin trouvé pour votre recherche.
+            </div>
+          }
+        </div>
+      </section>
+
+      <!-- ══════════ POPULAIRE EN CE MOMENT ═════════════ -->
+      <section class="mb-5">
+        <h4 class="section-titre mb-3">
+          <i class="bi bi-graph-up-arrow text-primary me-2"></i>
+          Populaire en ce moment
+        </h4>
+        <div class="row g-3">
+          @for (s of scrutins.slice(0, 4); track s.id) {
+            <div class="col-6 col-lg-3">
+              <div class="populaire-card" [style.background]="s.couleurVignette">
+                <div class="populaire-overlay">
+                  <div class="org-avatar-sm" [style.background]="s.orgCouleur">
+                    {{ s.orgInitiales }}
+                  </div>
+                  <span class="populaire-org">{{ s.organisation }}</span>
+                </div>
+                <div class="populaire-icone">
+                  <i [class]="'bi ' + s.iconeVignette"></i>
+                </div>
+                <p class="populaire-titre">{{ s.titre }}</p>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+
+      <!-- ══════════ CONSULTÉ RÉCEMMENT ══════════════════ -->
+      <section class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="section-titre mb-0">
+            <i class="bi bi-clock-history text-muted me-2"></i>
+            Consulté récemment
+          </h4>
+          <button class="btn-tout-effacer">Tout effacer</button>
+        </div>
+        <div class="recents-liste">
+          @for (r of scrutinsRecents; track r.id) {
+            <div class="recent-item">
+              <div class="org-avatar" [style.background]="r.orgCouleur">
+                {{ r.orgInitiales }}
+              </div>
+              <div class="recent-info">
+                <p class="recent-titre">{{ r.titre }}</p>
+                <p class="recent-org">{{ r.organisation }}</p>
+              </div>
+              <span class="recent-statut">{{ r.statut }}</span>
+            </div>
+          }
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Barre aide en bas -->
+    <div class="barre-aide">
+      <span>
+        <i class="bi bi-info-circle me-2"></i>
+        Besoin d'aide ? Consultez notre guide de l'électeur.
+      </span>
+      <a href="#" class="lien-aide">Aide en ligne</a>
+    </div>
+
+  </div>
+</div>

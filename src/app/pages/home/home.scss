@@ -1,0 +1,568 @@
+// ============================================================
+// home.component.scss
+// Styles de la page d'accueil Votify
+// Couleur principale : #2563EB (bleu Votify)
+// ============================================================
+
+// ── Variables locales ─────────────────────────────────────
+$blue:       #2563EB;
+$blue-dark:  #1D4ED8;
+$blue-light: #EFF6FF;
+$dark:       #0f172a;
+$gray:       #6b7280;
+$light-gray: #f8faff;
+
+// ══════════════════════════════════════════════════════════
+// NAVBAR
+// ══════════════════════════════════════════════════════════
+.navbar-votify {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  padding: 0.9rem 0;
+  box-shadow: 0 1px 20px rgba(0,0,0,0.05);
+}
+
+// Logo
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background: $blue;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+
+  &.logo-icon-sm {
+    width: 30px;
+    height: 30px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+  }
+}
+
+.logo-text {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: $dark;
+  letter-spacing: -0.03em;
+}
+
+// Liens navbar
+.nav-link-custom {
+  color: #374151;
+  font-weight: 500;
+  font-size: 0.9rem;
+  padding: 0.4rem 0.8rem !important;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: $blue;
+    background: $blue-light;
+  }
+}
+
+// Bouton navbar
+.btn-navbar {
+  background: $blue;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 0.5rem 1.25rem;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: $blue-dark;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba($blue, 0.35);
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// HERO SECTION
+// ══════════════════════════════════════════════════════════
+.hero-section {
+  background: linear-gradient(135deg, #f8faff 0%, $blue-light 60%, #f0f7ff 100%);
+  min-height: 100vh;
+  padding-top: 120px;
+  padding-bottom: 80px;
+}
+
+// Badge "Nouvelle version"
+.badge-nouvelle-version {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  border: 1px solid darken($blue-light, 8%);
+  color: $blue;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 0.4rem 1rem;
+  border-radius: 99px;
+  box-shadow: 0 2px 8px rgba($blue, 0.1);
+
+  .dot {
+    width: 7px;
+    height: 7px;
+    background: $blue;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(1.3); }
+}
+
+// Titre hero
+.hero-title {
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  font-weight: 900;
+  line-height: 1.08;
+  color: $dark;
+  letter-spacing: -0.04em;
+}
+
+.hero-title-accent {
+  color: $blue;
+  position: relative;
+}
+
+.hero-subtitle {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: $gray;
+  max-width: 520px;
+}
+
+// Boutons hero
+.btn-hero-primary {
+  background: $blue;
+  color: white;
+  border: 2px solid $blue;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 0.85rem 2rem;
+  transition: all 0.25s ease;
+  text-decoration: none;
+
+  &:hover {
+    background: $blue-dark;
+    border-color: $blue-dark;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba($blue, 0.35);
+  }
+}
+
+.btn-hero-secondary {
+  background: white;
+  color: $dark;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.85rem 2rem;
+  transition: all 0.25s ease;
+  text-decoration: none;
+
+  &:hover {
+    border-color: $blue;
+    color: $blue;
+    transform: translateY(-2px);
+  }
+}
+
+// Badges de confiance
+.badge-confiance {
+  font-size: 0.85rem;
+  color: $gray;
+  display: flex;
+  align-items: center;
+}
+
+// ── Illustration hero ──────────────────────────────────
+.hero-illustration {
+  position: relative;
+}
+
+.device-frame {
+  background: white;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow:
+    0 25px 60px rgba($blue, 0.12),
+    0 0 0 1px rgba(0,0,0,0.05);
+  width: 100%;
+  max-width: 420px;
+}
+
+.device-screen {
+  background: #f8faff;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.mock-vote-ui {
+  .mock-title {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: $dark;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+}
+
+.mock-candidate {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  background: white;
+  border: 2px solid transparent;
+  transition: all 0.2s;
+
+  &.active {
+    border-color: $blue;
+    background: $blue-light;
+  }
+
+  .mock-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e5e7eb, #d1d5db);
+    flex-shrink: 0;
+  }
+
+  .mock-info {
+    flex: 1;
+
+    .mock-name {
+      height: 8px;
+      background: #e5e7eb;
+      border-radius: 4px;
+      width: 70%;
+      margin-bottom: 6px;
+    }
+
+    .mock-role {
+      height: 6px;
+      background: #f3f4f6;
+      border-radius: 4px;
+      width: 50%;
+    }
+  }
+}
+
+.mock-btn {
+  margin-top: 16px;
+  background: $blue;
+  color: white;
+  text-align: center;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+// ══════════════════════════════════════════════════════════
+// STATISTIQUES
+// ══════════════════════════════════════════════════════════
+.stats-section {
+  background: white;
+  padding: 60px 0;
+  border-top: 1px solid #f3f4f6;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.stat-valeur {
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: $blue;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: $gray;
+  text-transform: uppercase;
+}
+
+// ══════════════════════════════════════════════════════════
+// FONCTIONNALITÉS
+// ══════════════════════════════════════════════════════════
+.features-section {
+  padding: 100px 0;
+  background: white;
+}
+
+.section-titre {
+  font-size: clamp(1.7rem, 3vw, 2.3rem);
+  font-weight: 800;
+  color: $dark;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+.section-sous-titre {
+  font-size: 1rem;
+  color: $gray;
+  max-width: 560px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.feature-card {
+  padding: 2rem 1.5rem;
+  border-radius: 20px;
+  border: 1px solid #f0f0f0;
+  text-align: center;
+  height: 100%;
+  transition: all 0.3s ease;
+  background: white;
+
+  &:hover {
+    transform: translateY(-6px);
+    border-color: $blue;
+    box-shadow: 0 16px 40px rgba($blue, 0.1);
+  }
+}
+
+.feature-icon-wrap {
+  width: 64px;
+  height: 64px;
+  background: $blue-light;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+  font-size: 1.6rem;
+  color: $blue;
+  transition: all 0.3s ease;
+
+  .feature-card:hover & {
+    background: $blue;
+    color: white;
+    transform: scale(1.1);
+  }
+}
+
+.feature-titre {
+  font-weight: 700;
+  font-size: 1rem;
+  color: $dark;
+  margin-bottom: 0.75rem;
+}
+
+.feature-desc {
+  font-size: 0.875rem;
+  color: $gray;
+  line-height: 1.65;
+  margin: 0;
+}
+
+// ══════════════════════════════════════════════════════════
+// SÉCURITÉ
+// ══════════════════════════════════════════════════════════
+.securite-section {
+  padding: 100px 0;
+  background: #f8faff;
+}
+
+.securite-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  transition: all 0.25s ease;
+
+  &:hover {
+    border-color: $blue;
+    box-shadow: 0 8px 24px rgba($blue, 0.08);
+  }
+}
+
+.securite-card-icon {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  background: $blue-light;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  color: $blue;
+}
+
+.securite-card-titre {
+  font-weight: 700;
+  color: $dark;
+  margin-bottom: 0.25rem;
+  font-size: 0.95rem;
+}
+
+.securite-card-desc {
+  font-size: 0.85rem;
+  color: $gray;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.titre-accent-italic {
+  color: $blue;
+  font-style: italic;
+}
+
+.securite-point {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: $gray;
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+
+  i { font-size: 1rem; }
+}
+
+// ══════════════════════════════════════════════════════════
+// CTA
+// ══════════════════════════════════════════════════════════
+.cta-section {
+  padding: 60px 0 80px;
+}
+
+.cta-card {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border-radius: 28px;
+  padding: 4rem 3.5rem;
+
+  @media (max-width: 576px) {
+    padding: 2.5rem 1.5rem;
+  }
+}
+
+.cta-titre {
+  font-size: clamp(1.7rem, 3vw, 2.5rem);
+  font-weight: 900;
+  color: white;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin-bottom: 1rem;
+}
+
+.cta-desc {
+  color: rgba(255,255,255,0.7);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.cta-badge {
+  background: rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.85);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 99px;
+  padding: 0.4rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  backdrop-filter: blur(4px);
+}
+
+.btn-cta {
+  background: white;
+  color: #1e293b;
+  border: none;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 1rem 2rem;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.25s ease;
+
+  &:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  }
+}
+
+.cta-mention {
+  color: rgba(255,255,255,0.4);
+  font-size: 0.78rem;
+  margin-top: 0.75rem;
+  margin-bottom: 0;
+}
+
+// ══════════════════════════════════════════════════════════
+// FOOTER
+// ══════════════════════════════════════════════════════════
+.footer-section {
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+  padding: 60px 0 30px;
+}
+
+.footer-desc {
+  font-size: 0.875rem;
+  color: $gray;
+  line-height: 1.7;
+  max-width: 280px;
+}
+
+.footer-titre-col {
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: $dark;
+  margin-bottom: 1rem;
+  letter-spacing: 0.01em;
+}
+
+.footer-lien {
+  display: block;
+  color: $gray;
+  font-size: 0.875rem;
+  text-decoration: none;
+  padding: 0.2rem 0;
+  transition: color 0.2s ease;
+
+  &:hover { color: $blue; }
+}
+
+.footer-divider {
+  border-color: #e5e7eb;
+  margin: 2.5rem 0 1.5rem;
+}
+
+.footer-copyright {
+  text-align: center;
+  color: #9ca3af;
+  font-size: 0.8rem;
+  margin: 0;
+}

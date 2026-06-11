@@ -1,0 +1,195 @@
+<!-- ============================================================
+     GESTION CANDIDATS — candidats.component.html
+     Grille de cartes candidats avec recherche et stats.
+     Fidèle à la maquette Visily.
+     ============================================================ -->
+
+<div class="admin-wrapper">
+
+  <!-- ══════════════════ SIDEBAR ═══════════════════════════ -->
+  <aside class="sidebar">
+    <a href="/admin" class="sidebar-brand">
+      <div class="sidebar-logo-icon"><i class="bi bi-check2-square"></i></div>
+      <span class="sidebar-logo-text">Votify</span>
+    </a>
+    <nav class="sidebar-nav">
+      @for (item of navItems; track item.route) {
+        <a class="sidebar-lien" [class.actif]="item.actif"
+           (click)="setOnglet(item.route)" href="javascript:void(0)">
+          <i [class]="'bi ' + item.icone"></i>
+          <span>{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+    <button class="btn-deconnexion">
+      <i class="bi bi-box-arrow-left text-danger"></i>
+      <span>Déconnexion</span>
+    </button>
+    <p class="sidebar-footer">© 2026 Votify — v2.4</p>
+  </aside>
+
+  <!-- ══════════════════ ZONE PRINCIPALE ═══════════════════ -->
+  <div class="main-zone">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <h6 class="topbar-titre">Tableau de bord</h6>
+      <div class="topbar-droite">
+        <div class="recherche-box-top">
+          <i class="bi bi-search"></i>
+          <input type="text" placeholder="Rechercher...">
+        </div>
+        <button class="btn-notif"><i class="bi bi-bell"></i></button>
+        <div class="avatar-top">ML</div>
+      </div>
+    </header>
+
+    <main class="main-contenu">
+
+      <!-- En-tête -->
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+        <div>
+          <p class="breadcrumb-texte">
+            <i class="bi bi-people-fill text-primary me-1"></i>
+            Gestion des membres
+          </p>
+          <h3 class="page-titre">Gestion des Candidats</h3>
+          <p class="page-sous-titre">Gérez les profils des candidats participant à vos scrutins actifs.</p>
+        </div>
+        <button class="btn-ajouter-candidat">
+          <i class="bi bi-plus-lg me-2"></i>Ajouter un candidat
+        </button>
+      </div>
+
+      <!-- Barre de recherche + filtres -->
+      <div class="barre-recherche-wrap mb-4">
+        <div class="barre-recherche">
+          <i class="bi bi-search text-muted"></i>
+          <input
+            type="text"
+            [(ngModel)]="recherche"
+            placeholder="Rechercher un candidat par nom ou poste...">
+        </div>
+        <div class="filtres-droite">
+          <button class="btn-filtre">
+            <i class="bi bi-funnel me-1"></i>Filtrer
+          </button>
+          <button class="btn-trier">Trier par nom</button>
+        </div>
+      </div>
+
+      <!-- Statistiques rapides -->
+      <div class="stats-rapides mb-4">
+        <div class="stat-rapide">
+          <div class="stat-rapide-barre"></div>
+          <div>
+            <p class="stat-rapide-label">TOTAL CANDIDATS</p>
+            <p class="stat-rapide-valeur">{{ totalCandidats }}</p>
+          </div>
+        </div>
+        <div class="stat-rapide">
+          <div>
+            <p class="stat-rapide-label">INSCRIPTIONS VALIDÉES</p>
+            <p class="stat-rapide-valeur">{{ inscriptionsValides }}</p>
+          </div>
+        </div>
+        <div class="stat-rapide">
+          <div>
+            <p class="stat-rapide-label">EN ATTENTE</p>
+            <p class="stat-rapide-valeur">{{ enAttente }}</p>
+          </div>
+        </div>
+        <div class="stat-rapide">
+          <div>
+            <p class="stat-rapide-label">SCRUTINS ACTIFS</p>
+            <p class="stat-rapide-valeur">{{ scrutinsActifs }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grille de cartes candidats -->
+      <div class="row g-3 mb-4">
+
+        @for (candidat of candidatsFiltres; track candidat.id) {
+          <div class="col-sm-6 col-lg-4 col-xl-3">
+            <div class="candidat-card">
+
+              <!-- Avatar -->
+              <div class="candidat-avatar-wrap">
+                <div class="candidat-avatar"
+                     [style.background]="candidat.couleurAvatar">
+                  {{ candidat.initiales }}
+                </div>
+                <div class="candidat-avatar-badge">
+                  <i class="bi bi-camera-fill"></i>
+                </div>
+              </div>
+
+              <!-- Infos -->
+              <h5 class="candidat-nom">{{ candidat.nom }}</h5>
+              <p class="candidat-parti">{{ candidat.parti }}</p>
+              <p class="candidat-poste">{{ candidat.poste }}</p>
+              <p class="candidat-desc">{{ candidat.description }}</p>
+
+              <!-- Actions -->
+              <div class="candidat-actions">
+                <button class="btn-modifier" (click)="modifierCandidat(candidat.id)">
+                  <i class="bi bi-pencil me-1"></i>Modifier
+                </button>
+                <button class="btn-supprimer" (click)="supprimerCandidat(candidat.id)">
+                  <i class="bi bi-trash me-1"></i>Supprimer
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Carte "Ajouter un candidat" -->
+        <div class="col-sm-6 col-lg-4 col-xl-3">
+          <div class="candidat-card-ajouter">
+            <div class="ajouter-icone">
+              <i class="bi bi-plus-lg"></i>
+            </div>
+            <h6 class="ajouter-titre">Ajouter un candidat</h6>
+            <p class="ajouter-desc">Cliquez ici pour créer une nouvelle fiche candidat</p>
+          </div>
+        </div>
+
+        <!-- Message si aucun résultat -->
+        @if (candidatsFiltres.length === 0) {
+          <div class="col-12 text-center py-5 text-muted">
+            <i class="bi bi-search fs-2 d-block mb-2"></i>
+            Aucun candidat trouvé pour "{{ recherche }}"
+          </div>
+        }
+      </div>
+
+      <!-- Bannière d'aide -->
+      <div class="banniere-aide">
+        <div class="d-flex align-items-center gap-3">
+          <div class="aide-icone">
+            <i class="bi bi-people fs-4 text-primary"></i>
+          </div>
+          <div>
+            <h6 class="aide-titre">Besoin d'aide pour gérer vos candidats ?</h6>
+            <p class="aide-desc">
+              Vous pouvez importer une liste de candidats massivement via un fichier CSV ou Excel.
+              Pour plus d'informations sur les critères d'éligibilité, consultez notre guide de l'administrateur.
+            </p>
+          </div>
+        </div>
+        <button class="btn-guide">Consulter le guide</button>
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="page-footer">
+      <span>© 2026 Votify — Système de Gestion des Candidats v2.4</span>
+      <div class="d-flex gap-3">
+        <a href="#" class="footer-lien">Conditions d'utilisation</a>
+        <a href="#" class="footer-lien">Protection des données</a>
+      </div>
+    </footer>
+  </div>
+</div>

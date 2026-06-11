@@ -1,0 +1,337 @@
+
+<!-- ============================================================
+     PAGE ACCUEIL — home.component.html
+     Reproduit fidèlement la maquette Visily fournie :
+     Navbar → Hero → Stats → Features → Sécurité → CTA → Footer
+     ============================================================ -->
+
+<!-- ══════════════════════════════════════════════════════════
+     NAVBAR
+     ══════════════════════════════════════════════════════════ -->
+<nav class="navbar navbar-expand-lg navbar-votify fixed-top">
+  <div class="container">
+
+    <!-- Logo Votify -->
+    <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+      <div class="logo-icon">
+        <i class="bi bi-check2-square"></i>
+      </div>
+      <span class="logo-text">Votify</span>
+    </a>
+
+    <!-- Bouton hamburger mobile -->
+    <button class="navbar-toggler border-0 shadow-none" type="button"
+            data-bs-toggle="collapse" data-bs-target="#navbarMenu">
+      <i class="bi bi-list fs-3 text-dark"></i>
+    </button>
+
+    <!-- Liens de navigation -->
+    <div class="collapse navbar-collapse" id="navbarMenu">
+      <ul class="navbar-nav ms-auto align-items-center gap-2 py-3 py-lg-0">
+        <li class="nav-item">
+          <a class="nav-link nav-link-custom" href="#fonctionnalites">Fonctionnalités</a>
+        </li>
+        <!-- <li class="nav-item">
+          <a class="nav-link nav-link-custom" href="#securite">Sécurité</a>
+        </li> -->
+        <li class="nav-item ms-lg-2">
+          <a class="nav-link nav-link-custom" href="/login">sign in</a>
+        </li>
+        <li class="nav-item ms-lg-1">
+          <a class="btn btn-primary btn-navbar px-4" href="/register">sign up</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════
+     HERO SECTION
+     ══════════════════════════════════════════════════════════ -->
+<section class="hero-section">
+  <div class="container">
+    <div class="row align-items-center g-5">
+
+      <!-- Texte gauche -->
+      <div class="col-lg-6">
+
+<!-- Badge "Nouvelle version" -->
+        <!-- <div class="badge-nouvelle-version mb-4">
+          <span class="dot"></span>
+          NOUVELLE VERSION 2.0 DISPONIBLE
+        </div> -->
+        
+        <h1 class="hero-title">
+          Votez simplement,<br>
+          rapidement et en<br>
+          <span class="hero-title-accent">toute sécurité</span>
+        </h1>
+
+        <p class="hero-subtitle mt-4 mb-5">
+          La solution de vote électronique nouvelle génération conçue
+          spécifiquement pour les universités, les associations et les
+          organisations soucieuses de transparence.
+        </p>
+
+        <!-- Boutons d'action -->
+        <div class="d-flex gap-3 flex-wrap mb-4">
+          <a href="/login" class="btn btn-hero-primary">
+            Commencer maintenant
+          </a>
+          <a href="/login" class="btn btn-hero-secondary">
+            Se connecter
+          </a>
+        </div>
+
+        <!-- Badges de confiance -->
+        <div class="d-flex gap-4 flex-wrap">
+          <span class="badge-confiance">
+            <i class="bi bi-check-circle-fill text-success me-2"></i>
+            Certifié RGPD
+          </span>
+          <span class="badge-confiance">
+            <i class="bi bi-check-circle-fill text-success me-2"></i>
+            Chiffrement AES-256
+          </span>
+        </div>
+      </div>
+
+      <!-- Illustration droite -->
+      <div class="col-lg-6 d-flex justify-content-center">
+        <div class="hero-illustration">
+          <!-- <div class="device-frame">
+            <div class="device-screen"> -->
+              <!-- Simulation d'interface de vote -->
+              <!-- <div class="mock-vote-ui">
+                <div class="mock-title">Élection du Conseil</div>
+                <div class="mock-candidate active">
+                  <div class="mock-avatar"></div>
+                  <div class="mock-info">
+                    <div class="mock-name"></div>
+                    <div class="mock-role"></div>
+                  </div>
+                  <i class="bi bi-check-circle-fill text-primary"></i>
+                </div>
+                <div class="mock-candidate">
+                  <div class="mock-avatar"></div>
+                  <div class="mock-info">
+                    <div class="mock-name"></div>
+                    <div class="mock-role"></div>
+                  </div>
+                </div>
+                <div class="mock-candidate">
+                  <div class="mock-avatar"></div>
+                  <div class="mock-info">
+                    <div class="mock-name"></div>
+                    <div class="mock-role"></div>
+                  </div>
+                </div>
+                <div class="mock-btn">Voter maintenant</div>
+              </div> -->
+              <img src="votify_acceuil.png" alt="" width="400px">
+            <!-- </div>
+          </div> -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     STATISTIQUES
+     ══════════════════════════════════════════════════════════ -->
+<!-- <section class="stats-section">
+  <div class="container">
+    <div class="row g-4 text-center">
+      @for (stat of stats; track stat.label) {
+        <div class="col-6 col-md-3">
+          <div class="stat-valeur">{{ stat.valeur }}</div>
+          <div class="stat-label">{{ stat.label }}</div>
+        </div>
+      }
+    </div>
+  </div>
+</section> -->
+
+<!-- ══════════════════════════════════════════════════════════
+     FONCTIONNALITÉS
+     ══════════════════════════════════════════════════════════ -->
+<section class="features-section" id="fonctionnalites">
+  <div class="container">
+
+    <div class="text-center mb-5">
+      <h2 class="section-titre">Une plateforme robuste pour vos scrutins</h2>
+      <p class="section-sous-titre">
+        Découvrez comment Votify transforme l'expérience électorale
+        grâce à des outils intuitifs et sécurisés.
+      </p>
+    </div>
+
+    <div class="row g-4">
+      @for (feature of features; track feature.titre) {
+        <div class="col-sm-6 col-lg-3">
+          <div class="feature-card">
+            <div class="feature-icon-wrap">
+              <i [class]="'bi ' + feature.icon"></i>
+            </div>
+            <h5 class="feature-titre">{{ feature.titre }}</h5>
+            <p class="feature-desc">{{ feature.description }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     SÉCURITÉ
+     ══════════════════════════════════════════════════════════ -->
+<section class="securite-section" id="securite">
+  <div class="container">
+    <div class="row align-items-center g-5">
+
+      <!-- Cartes sécurité gauche -->
+      <div class="col-lg-5">
+        <div class="securite-card mb-3">
+          <div class="securite-card-icon">
+            <i class="bi bi-fingerprint"></i>
+          </div>
+          <div>
+            <h6 class="securite-card-titre">Authentification forte</h6>
+            <p class="securite-card-desc">
+              Vérification d'identité multi-facteurs pour garantir
+              l'unicité de chaque vote.
+            </p>
+          </div>
+        </div>
+
+        <div class="securite-card">
+          <div class="securite-card-icon">
+            <i class="bi bi-shield-lock"></i>
+          </div>
+          <div>
+            <h6 class="securite-card-titre">Immuabilité</h6>
+            <p class="securite-card-desc">
+              Les votes sont enregistrés de manière imaltérable
+              grâce à notre technologie de registre.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Texte droite -->
+      <div class="col-lg-7">
+        <h2 class="section-titre">
+          La sécurité est notre
+          <span class="titre-accent-italic">priorité absolue</span>
+        </h2>
+        <p class="section-sous-titre mt-3 mb-4">
+          Nous utilisons des technologies de chiffrement de pointe pour garantir
+          que chaque vote est privé, sécurisé et comptabilisé correctement.
+          Notre architecture est régulièrement auditée par des experts
+          en cybersécurité indépendants.
+        </p>
+        <ul class="list-unstyled">
+          @for (point of pointsSecurite; track point) {
+            <li class="securite-point">
+              <i class="bi bi-check-circle-fill text-success"></i>
+              {{ point }}
+            </li>
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     CTA — APPEL À L'ACTION
+     ══════════════════════════════════════════════════════════ -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-card">
+      <div class="row align-items-center g-4">
+
+        <div class="col-lg-7">
+          <h2 class="cta-titre">Prêt à moderniser vos élections ?</h2>
+          <p class="cta-desc">
+            Que vous soyez une petite association ou une grande université,
+            Votify s'adapte à vos besoins. Demandez un compte administrateur
+            aujourd'hui et lancez votre premier scrutin gratuitement.
+          </p>
+          <div class="d-flex gap-2 flex-wrap mt-3">
+            <span class="cta-badge">🔒 Sécurité militaire</span>
+            <span class="cta-badge">🌐 Multi-plateforme</span>
+          </div>
+        </div>
+
+        <div class="col-lg-5 text-lg-end">
+          <a href="demande-admin" class="btn btn-cta">
+            Demander un compte administrateur →
+          </a>
+          <p class="cta-mention">Réponse sous 24h ouvrées. Sans engagement.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     FOOTER
+     ══════════════════════════════════════════════════════════ -->
+<footer class="footer-section">
+  <div class="container">
+    <div class="row g-4">
+
+      <!-- Brand -->
+      <div class="col-lg-4 mb-3">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <div class="logo-icon logo-icon-sm">
+            <i class="bi bi-check2-square"></i>
+          </div>
+          <span class="logo-text">Votify</span>
+        </div>
+        <p class="footer-desc">
+          La plateforme de vote électronique de confiance
+          pour les organisations modernes.
+        </p>
+      </div>
+
+      <!-- Produit -->
+      <div class="col-6 col-lg-2">
+        <h6 class="footer-titre-col">Produit</h6>
+        <ul class="list-unstyled">
+          <li><a href="#fonctionnalites" class="footer-lien">Fonctionnalités</a></li>
+          <li><a href="#securite" class="footer-lien">Sécurité</a></li>
+          <li><a href="#" class="footer-lien">Tarifs</a></li>
+        </ul>
+      </div>
+
+      <!-- Organisation -->
+      <div class="col-6 col-lg-3">
+        <h6 class="footer-titre-col">Organisation</h6>
+        <ul class="list-unstyled">
+          <li><a href="#" class="footer-lien">Devenir Administrateur</a></li>
+          <li><a href="#" class="footer-lien">Associations</a></li>
+          <li><a href="#" class="footer-lien">Universités</a></li>
+        </ul>
+      </div>
+
+      <!-- Support -->
+      <div class="col-6 col-lg-3">
+        <h6 class="footer-titre-col">Support</h6>
+        <ul class="list-unstyled">
+          <li><a href="#" class="footer-lien">Centre d'aide</a></li>
+          <li><a href="#" class="footer-lien">Contact</a></li>
+          <li><a href="#" class="footer-lien">Confidentialité</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <hr class="footer-divider">
+    <p class="footer-copyright">
+      © 2026 Votify. Développé pour la transparence démocratique.
+    </p>
+  </div>
+</footer>

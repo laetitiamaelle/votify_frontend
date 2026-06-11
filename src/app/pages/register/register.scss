@@ -1,0 +1,290 @@
+// ============================================================
+// register.component.scss
+// Design split-screen inscription électeur
+// ============================================================
+
+$blue:       #2563EB;
+$blue-dark:  #1D4ED8;
+$blue-light: #EFF6FF;
+$dark:       #0f172a;
+$gray:       #6b7280;
+$border:     #e5e7eb;
+
+// ══════════════════════════════════════════════════════════
+// WRAPPER — Deux colonnes plein écran
+// ══════════════════════════════════════════════════════════
+.register-wrapper {
+  display: flex;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+// ══════════════════════════════════════════════════════════
+// PANNEAU GAUCHE — Fond bleu très clair
+// ══════════════════════════════════════════════════════════
+.register-gauche {
+  width: 45%;
+  min-height: 100vh;
+  background: linear-gradient(160deg, #eef2ff 0%, #e0e7ff 100%);
+  padding: 3rem 3rem 3rem;
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: 991px) { display: none; }
+}
+
+.brand-icon {
+  width: 36px; height: 36px;
+  background: $blue; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 1.1rem; flex-shrink: 0;
+}
+
+.brand-text {
+  font-weight: 800; font-size: 1.2rem;
+  color: $dark; letter-spacing: -0.03em;
+  text-decoration: none;
+}
+
+.brand { text-decoration: none; }
+
+// Titre principal gauche
+.gauche-titre {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: $dark;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+
+.gauche-sous-titre {
+  color: $gray;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  max-width: 380px;
+}
+
+// ── Arguments ─────────────────────────────────────────────
+.arguments-liste {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.argument-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.argument-icone {
+  width: 44px; height: 44px; min-width: 44px;
+  background: white;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; color: $blue;
+  box-shadow: 0 2px 8px rgba($blue, 0.12);
+}
+
+.argument-titre {
+  font-weight: 700; font-size: 0.95rem;
+  color: $dark; margin-bottom: 0.25rem;
+}
+
+.argument-desc {
+  font-size: 0.85rem; color: $gray;
+  line-height: 1.6; margin: 0;
+}
+
+// ── Témoignage ────────────────────────────────────────────
+.temoignage {
+  border-top: 1px solid rgba($blue, 0.15);
+}
+
+.temoignage-texte {
+  font-size: 0.9rem; color: #4b5563;
+  font-style: italic; line-height: 1.65;
+  margin-bottom: 0.5rem;
+}
+
+.temoignage-auteur {
+  font-size: 0.85rem; font-weight: 600;
+  color: $dark; margin: 0;
+}
+
+// ══════════════════════════════════════════════════════════
+// PANNEAU DROIT — Formulaire
+// ══════════════════════════════════════════════════════════
+.register-droite {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 480px;
+}
+
+.form-titre {
+  font-size: 1.9rem; font-weight: 900;
+  color: $dark; letter-spacing: -0.03em;
+  margin-bottom: 0.5rem;
+}
+
+.form-sous-titre {
+  color: $gray; font-size: 0.9rem;
+  line-height: 1.6; margin-bottom: 1.75rem;
+}
+
+// ── Labels ────────────────────────────────────────────────
+.label-field {
+  display: block; font-weight: 600;
+  font-size: 0.875rem; color: $dark;
+  margin-bottom: 0.45rem;
+}
+
+// ── Champs ────────────────────────────────────────────────
+.input-wrap {
+  position: relative;
+  display: flex; align-items: center;
+}
+
+.input-icone {
+  position: absolute; left: 14px;
+  color: $gray; font-size: 0.95rem;
+  pointer-events: none; z-index: 1;
+}
+
+.champ {
+  width: 100%;
+  border: 1.5px solid $border;
+  border-radius: 12px;
+  padding: 0.75rem 1rem 0.75rem 2.75rem;
+  font-size: 0.875rem; color: $dark;
+  background: white; outline: none;
+  transition: all 0.2s ease;
+
+  &::placeholder { color: #9ca3af; }
+
+  &:focus {
+    border-color: $blue;
+    box-shadow: 0 0 0 3px rgba($blue, 0.1);
+  }
+
+  &.champ-erreur { border-color: #ef4444; }
+  &.champ-avec-toggle { padding-right: 2.75rem; }
+}
+
+// Bouton œil mot de passe
+.btn-toggle-mdp {
+  position: absolute; right: 12px;
+  background: none; border: none;
+  color: $gray; cursor: pointer;
+  font-size: 0.95rem; padding: 4px;
+  transition: color 0.2s; z-index: 2;
+  &:hover { color: $blue; }
+}
+
+// Message d'erreur
+.msg-erreur {
+  color: #ef4444; font-size: 0.78rem;
+  margin-top: 0.3rem;
+}
+
+// ── Checkbox ──────────────────────────────────────────────
+.checkbox-label {
+  display: flex; align-items: flex-start;
+  gap: 10px; cursor: pointer;
+  font-size: 0.875rem; color: $gray;
+  line-height: 1.5;
+}
+
+.checkbox-input {
+  display: none;
+  &:checked + .checkbox-custom {
+    background: $blue; border-color: $blue;
+    &::after { opacity: 1; }
+  }
+}
+
+.checkbox-custom {
+  width: 18px; height: 18px; min-width: 18px;
+  border: 2px solid $border; border-radius: 5px;
+  background: white; position: relative;
+  transition: all 0.2s; margin-top: 2px;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 4px; top: 1px;
+    width: 5px; height: 9px;
+    border: 2px solid white;
+    border-top: none; border-left: none;
+    transform: rotate(45deg);
+    opacity: 0; transition: opacity 0.2s;
+  }
+}
+
+.lien-bleu {
+  color: $blue; text-decoration: none;
+  &:hover { text-decoration: underline; }
+}
+
+// ── Bouton créer compte ───────────────────────────────────
+.btn-creer {
+  width: 100%;
+  background: $blue; color: white;
+  border: none; border-radius: 12px;
+  padding: 0.95rem; font-size: 0.95rem;
+  font-weight: 700; cursor: pointer;
+  transition: all 0.25s ease;
+
+  &:hover {
+    background: $blue-dark;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba($blue, 0.35);
+  }
+}
+
+// ── Séparateur ────────────────────────────────────────────
+.separateur-ou {
+  position: relative;
+  text-align: center;
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.1em; color: #9ca3af;
+
+  &::before, &::after {
+    content: '';
+    position: absolute; top: 50%;
+    width: 38%; height: 1px;
+    background: $border;
+  }
+  &::before { left: 0; }
+  &::after  { right: 0; }
+}
+
+// ── Boutons sociaux ───────────────────────────────────────
+.btn-social {
+  width: 100%;
+  background: white; color: $dark;
+  border: 1.5px solid $border;
+  border-radius: 12px;
+  padding: 0.65rem 1rem;
+  font-size: 0.875rem; font-weight: 600;
+  cursor: pointer;
+  display: flex; align-items: center;
+  justify-content: center; gap: 8px;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: $blue;
+    color: $blue;
+    background: $blue-light;
+  }
+}

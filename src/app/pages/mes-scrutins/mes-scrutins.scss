@@ -1,0 +1,64 @@
+// mes-scrutins.component.scss
+$blue: #2563EB; $blue-dark: #1D4ED8; $blue-light: #EFF6FF;
+$dark: #0f172a; $gray: #6b7280; $border: #e5e7eb; $sidebar-w: 210px;
+
+.electeur-wrapper { display: flex; min-height: 100vh; background: #f8faff; }
+
+.sidebar { width: $sidebar-w; min-width: $sidebar-w; min-height: 100vh; background: white; border-right: 1px solid $border; display: flex; flex-direction: column; padding: 1.25rem 0.75rem; position: sticky; top: 0; height: 100vh; overflow-y: auto; @media (max-width: 768px) { display: none; } }
+.sidebar-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; margin-bottom: 2rem; padding: 0 0.5rem; }
+.sidebar-logo-icon { width: 36px; height: 36px; background: $blue; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; }
+.sidebar-logo-text { font-weight: 800; font-size: 1.1rem; color: $dark; letter-spacing: -0.03em; }
+.sidebar-nav { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.sidebar-lien { display: flex; align-items: center; gap: 10px; padding: 0.65rem 0.85rem; border-radius: 10px; text-decoration: none; color: $gray; font-size: 0.875rem; font-weight: 500; transition: all 0.2s; cursor: pointer; i { font-size: 1rem; } &:hover { background: $blue-light; color: $blue; } &.actif { background: $blue; color: white !important; font-weight: 600; } }
+.btn-deconnexion { display: flex; align-items: center; gap: 10px; width: 100%; background: none; border: none; padding: 0.65rem 0.85rem; border-radius: 10px; font-size: 0.875rem; color: #dc2626; cursor: pointer; transition: background 0.2s; text-align: left; &:hover { background: #fff5f5; } }
+
+.main-zone { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.topbar { height: 64px; background: white; border-bottom: 1px solid $border; display: flex; align-items: center; justify-content: space-between; padding: 0 1.75rem; position: sticky; top: 0; z-index: 10; }
+.topbar-titre { font-weight: 600; color: $gray; margin: 0; }
+.topbar-droite { display: flex; align-items: center; gap: 0.75rem; }
+.btn-notif { width: 38px; height: 38px; background: none; border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: $gray; cursor: pointer; &:hover { background: #f3f4f6; } }
+.avatar-top { width: 36px; height: 36px; background: linear-gradient(135deg, $blue, $blue-dark); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; }
+.main-contenu { flex: 1; padding: 1.75rem; overflow-y: auto; @media (max-width: 576px) { padding: 1rem; } }
+
+.page-titre { font-weight: 900; font-size: 1.7rem; color: $dark; letter-spacing: -0.03em; margin-bottom: 0.25rem; }
+.page-sous-titre { color: $gray; font-size: 0.9rem; margin: 0; }
+
+// Filtres
+.filtres-wrap { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.btn-filtre { background: white; border: 1.5px solid $border; border-radius: 99px; padding: 0.4rem 1rem; font-size: 0.85rem; font-weight: 500; color: $gray; cursor: pointer; transition: all 0.2s; &:hover { border-color: $blue; color: $blue; } &.actif { background: $blue; color: white; border-color: $blue; } }
+
+// Liste
+.scrutins-liste { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.scrutin-ligne {
+  background: white; border: 1px solid $border; border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;
+  transition: all 0.2s;
+  &:hover { border-color: lighten($blue, 25%); box-shadow: 0 4px 16px rgba($blue, 0.07); }
+  @media (max-width: 576px) { padding: 1rem; gap: 0.75rem; }
+}
+
+.org-avatar-lg { width: 48px; height: 48px; min-width: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; color: white; }
+
+.scrutin-info { flex: 1; min-width: 200px; }
+.scrutin-titre-ligne { font-weight: 700; font-size: 0.95rem; color: $dark; margin-bottom: 0.25rem; }
+.scrutin-org-ligne { font-size: 0.8rem; color: $gray; margin-bottom: 0.5rem; display: flex; align-items: center; flex-wrap: wrap; gap: 2px; }
+
+.mini-barre-wrap { display: flex; align-items: center; gap: 0.75rem; }
+.mini-barre-fond { flex: 1; height: 5px; background: #f3f4f6; border-radius: 99px; max-width: 180px; overflow: hidden; }
+.mini-barre-remplie { height: 100%; background: $blue; border-radius: 99px; }
+.mini-barre-texte { font-size: 0.75rem; color: $gray; white-space: nowrap; }
+
+.scrutin-actions-ligne { display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; @media (max-width: 576px) { flex-direction: row; align-items: center; width: 100%; justify-content: space-between; } }
+
+.badge-statut-ligne { padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.72rem; font-weight: 700;
+  &.statut-vote     { background: #dcfce7; color: #166534; }
+  &.statut-inscrit  { background: #fef3c7; color: #92400e; }
+  &.statut-en_cours { background: #dbeafe; color: $blue; }
+  &.statut-termine  { background: #f3f4f6; color: $gray; }
+}
+
+.btn-scrutin-action { background: white; border: 1.5px solid $border; border-radius: 10px; padding: 0.5rem 1rem; font-size: 0.82rem; font-weight: 600; color: $dark; cursor: pointer; transition: all 0.2s; white-space: nowrap; &:hover { border-color: $blue; color: $blue; } &.vote { background: $blue-light; border-color: $blue; color: $blue; } }
+
+.vide-message { text-align: center; padding: 3rem; color: $gray; font-size: 0.9rem; }

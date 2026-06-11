@@ -1,0 +1,257 @@
+// ============================================================
+// demande-admin.component.scss
+// ============================================================
+
+$blue:       #2563EB;
+$blue-dark:  #1D4ED8;
+$blue-light: #EFF6FF;
+$dark:       #0f172a;
+$gray:       #6b7280;
+$border:     #e5e7eb;
+
+// ══════════════════════════════════════════════════════════
+// NAVBAR
+// ══════════════════════════════════════════════════════════
+.navbar-demande {
+  background: white;
+  border-bottom: 1px solid $border;
+  padding: 0.9rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.brand-icon {
+  width: 34px; height: 34px;
+  background: $blue;
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 1rem;
+}
+
+.brand-text {
+  font-weight: 800; font-size: 1.15rem;
+  color: $dark; letter-spacing: -0.03em;
+}
+
+.lien-nav {
+  color: $gray; font-size: 0.9rem; font-weight: 500;
+  text-decoration: none;
+  &:hover { color: $blue; }
+}
+
+.btn-nav-primary {
+  background: $blue; color: white;
+  border-radius: 10px; padding: 0.45rem 1.2rem;
+  font-size: 0.875rem; font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+  &:hover { background: $blue-dark; color: white; }
+}
+
+// ══════════════════════════════════════════════════════════
+// MAIN
+// ══════════════════════════════════════════════════════════
+.demande-main {
+  padding: 2rem 0 3rem;
+  background: #f8faff;
+  min-height: calc(100vh - 64px - 48px);
+}
+
+.lien-retour {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: $gray; text-decoration: none; font-size: 0.875rem;
+  font-weight: 500; margin-bottom: 1.5rem;
+  transition: color 0.2s;
+  &:hover { color: $blue; }
+}
+
+// ══════════════════════════════════════════════════════════
+// CARTE FORMULAIRE
+// ══════════════════════════════════════════════════════════
+.formulaire-card {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 30px rgba(0,0,0,0.07);
+  overflow: hidden;
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+// Barre bleue en haut
+.card-top-bar {
+  height: 5px;
+  background: linear-gradient(90deg, $blue, lighten($blue, 15%));
+}
+
+.card-body-inner {
+  padding: 2.5rem 3rem;
+  @media (max-width: 576px) { padding: 1.75rem 1.25rem; }
+}
+
+// ── Icône et titre ────────────────────────────────────────
+.form-icon-wrap {
+  width: 56px; height: 56px;
+  background: $blue-light;
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; color: $blue;
+  margin: 0 auto 1.25rem;
+}
+
+.form-titre {
+  font-size: 1.6rem; font-weight: 900;
+  color: $dark; letter-spacing: -0.03em;
+  margin-bottom: 0.5rem;
+}
+
+.form-sous-titre {
+  color: $gray; font-size: 0.9rem;
+  line-height: 1.6; margin: 0;
+}
+
+// ── Labels ────────────────────────────────────────────────
+.label-field {
+  display: block; font-weight: 600;
+  font-size: 0.875rem; color: $dark;
+  margin-bottom: 0.45rem;
+}
+
+// ── Champs avec icône ─────────────────────────────────────
+.input-wrap {
+  position: relative;
+  display: flex; align-items: center;
+}
+
+.input-icone {
+  position: absolute; left: 14px;
+  color: $gray; font-size: 0.95rem;
+  pointer-events: none; z-index: 1;
+
+  &.input-icone-top {
+    top: 14px; align-self: flex-start;
+  }
+}
+
+.champ {
+  width: 100%;
+  border: 1.5px solid $border;
+  border-radius: 12px;
+  padding: 0.75rem 1rem 0.75rem 2.75rem;
+  font-size: 0.875rem; color: $dark;
+  background: white; outline: none;
+  transition: all 0.2s ease;
+
+  &::placeholder { color: #9ca3af; }
+
+  &:focus {
+    border-color: $blue;
+    box-shadow: 0 0 0 3px rgba($blue, 0.1);
+  }
+
+  &.champ-erreur {
+    border-color: #ef4444;
+    &:focus { box-shadow: 0 0 0 3px rgba(239,68,68,0.1); }
+  }
+}
+
+.champ-textarea {
+  padding-top: 0.75rem;
+  resize: vertical; min-height: 130px;
+}
+
+.textarea-wrap { align-items: flex-start; }
+
+// Message d'erreur
+.msg-erreur {
+  color: #ef4444; font-size: 0.78rem;
+  margin-top: 0.3rem; display: block;
+}
+
+// ── Bouton envoyer ────────────────────────────────────────
+.btn-envoyer {
+  width: 100%;
+  background: $blue; color: white;
+  border: none; border-radius: 14px;
+  padding: 1rem; font-size: 1rem;
+  font-weight: 700; cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex; align-items: center; justify-content: center;
+
+  &:hover {
+    background: $blue-dark;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba($blue, 0.35);
+  }
+}
+
+// Mentions légales
+.mentions-legales {
+  color: $gray; font-size: 0.8rem; line-height: 1.6;
+}
+.lien-bleu {
+  color: $blue; text-decoration: none;
+  &:hover { text-decoration: underline; }
+}
+
+// ══════════════════════════════════════════════════════════
+// SUCCÈS
+// ══════════════════════════════════════════════════════════
+.succes-container {
+  text-align: center; padding: 2rem 1rem;
+}
+
+.succes-icon {
+  font-size: 4rem; color: #22c55e;
+  margin-bottom: 1rem;
+}
+
+.succes-titre {
+  font-size: 1.75rem; font-weight: 900;
+  color: $dark; margin-bottom: 0.75rem;
+}
+
+.succes-desc {
+  color: $gray; font-size: 0.95rem;
+  line-height: 1.7; max-width: 400px;
+  margin: 0 auto 1.5rem;
+}
+
+.btn-nouvelle-demande {
+  background: $blue-light; color: $blue;
+  border: none; border-radius: 12px;
+  padding: 0.75rem 2rem; font-size: 0.9rem;
+  font-weight: 600; cursor: pointer;
+  transition: all 0.2s;
+  &:hover { background: darken($blue-light, 5%); }
+}
+
+// ══════════════════════════════════════════════════════════
+// BADGES DE CONFIANCE
+// ══════════════════════════════════════════════════════════
+.badges-confiance { max-width: 780px; margin: 0 auto; }
+
+.badge-card {
+  background: white; border-radius: 14px;
+  border: 1px solid $border; padding: 1.25rem 1rem;
+  transition: box-shadow 0.2s;
+  &:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+}
+
+.badge-label {
+  font-size: 0.75rem; font-weight: 800;
+  letter-spacing: 0.1em; margin-bottom: 0.25rem;
+}
+
+.badge-desc {
+  font-size: 0.85rem; color: $gray;
+}
+
+// ══════════════════════════════════════════════════════════
+// FOOTER
+// ══════════════════════════════════════════════════════════
+.demande-footer {
+  background: white; border-top: 1px solid $border;
+  text-align: center; padding: 1rem;
+  font-size: 0.78rem; color: #9ca3af;
+}

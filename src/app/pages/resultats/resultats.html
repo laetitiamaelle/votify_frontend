@@ -1,0 +1,250 @@
+<!-- ============================================================
+     RÉSULTATS — resultats.component.html
+     Page de résultats d'un scrutin pour l'électeur.
+     Responsive avec sidebar + contenu principal.
+     ============================================================ -->
+
+<div class="electeur-wrapper">
+
+  <!-- ══════════════════ SIDEBAR ═══════════════════════════ -->
+  <aside class="sidebar">
+    <a href="/" class="sidebar-brand">
+      <div class="sidebar-logo-icon"><i class="bi bi-check2-square"></i></div>
+      <span class="sidebar-logo-text">Votify</span>
+    </a>
+    <nav class="sidebar-nav">
+      @for (item of navItems; track item.route) {
+        <a class="sidebar-lien" [class.actif]="item.actif"
+           (click)="setOnglet(item.route)" href="javascript:void(0)">
+          <i [class]="'bi ' + item.icone"></i>
+          <span>{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+    <button class="btn-deconnexion">
+      <i class="bi bi-box-arrow-left text-danger"></i>
+      <span>Déconnexion</span>
+    </button>
+  </aside>
+
+  <!-- ══════════════════ ZONE PRINCIPALE ═══════════════════ -->
+  <div class="main-zone">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <h6 class="topbar-titre">Résultats</h6>
+      <div class="topbar-droite">
+        <div class="recherche-box-top">
+          <i class="bi bi-search"></i>
+          <input type="text" placeholder="Rechercher...">
+        </div>
+        <button class="btn-notif"><i class="bi bi-bell"></i></button>
+        <div class="avatar-top">ÉL</div>
+      </div>
+    </header>
+
+    <main class="main-contenu">
+
+      <!-- ══════════ EN-TÊTE SCRUTIN ═════════════════════ -->
+      <div class="scrutin-header mb-4">
+
+        <!-- Lien retour -->
+        <a href="javascript:void(0)" class="lien-retour mb-3 d-inline-flex">
+          <i class="bi bi-chevron-left me-1"></i> Retour à mes scrutins
+        </a>
+
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+          <div class="d-flex align-items-center gap-3">
+            <div class="org-avatar-xl" [style.background]="scrutin.orgCouleur">
+              {{ scrutin.orgInitiales }}
+            </div>
+            <div>
+              <span class="badge-termine mb-1 d-inline-block">
+                <i class="bi bi-check-circle-fill me-1"></i>{{ scrutin.statut }}
+              </span>
+              <h3 class="scrutin-titre-page">{{ scrutin.titre }}</h3>
+              <p class="scrutin-org-page">
+                <i class="bi bi-building me-1"></i>{{ scrutin.organisation }}
+                &nbsp;·&nbsp;
+                <i class="bi bi-calendar3 me-1"></i>
+                Du {{ scrutin.dateDebut }} au {{ scrutin.dateFin }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Boutons d'action -->
+          <div class="d-flex gap-2 flex-wrap">
+            <button class="btn-telecharger">
+              <i class="bi bi-download me-2"></i>Télécharger le rapport
+            </button>
+            <button class="btn-partager">
+              <i class="bi bi-share me-2"></i>Partager
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ CARTES STATISTIQUES ═════════════════ -->
+      <div class="row g-3 mb-4">
+        @for (stat of stats; track stat.label) {
+          <div class="col-6 col-lg-3">
+            <div class="stat-card">
+              <div class="stat-icone">
+                <i [class]="'bi ' + stat.icone"></i>
+              </div>
+              <div>
+                <p class="stat-label">{{ stat.label }}</p>
+                <h4 class="stat-valeur">{{ stat.valeur }}</h4>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="row g-4">
+
+        <!-- ══════════ RÉSULTATS CANDIDATS (gauche) ═══════ -->
+        <div class="col-lg-8">
+          <div class="resultats-card">
+
+            <div class="resultats-header">
+              <h5 class="resultats-titre">
+                <i class="bi bi-bar-chart-fill text-primary me-2"></i>
+                Résultats détaillés
+              </h5>
+              <span class="resultats-total">
+                {{ scrutin.totalVotants | number }} votes exprimés
+              </span>
+            </div>
+
+            <!-- Barre de participation globale -->
+            <div class="participation-globale mb-4">
+              <div class="d-flex justify-content-between mb-1">
+                <span class="participation-label">Taux de participation</span>
+                <span class="participation-pct-bold">{{ scrutin.tauxParticipation }}%</span>
+              </div>
+              <div class="grande-barre-fond">
+                <div class="grande-barre-remplie"
+                     [style.width.%]="scrutin.tauxParticipation">
+                </div>
+              </div>
+              <p class="participation-detail-text">
+                {{ scrutin.totalVotants | number }} électeurs sur
+                {{ scrutin.totalInscrits | number }} inscrits ont voté
+              </p>
+            </div>
+
+            <!-- Liste des candidats avec barres -->
+            <div class="candidats-resultats">
+              @for (c of candidats; track c.id; let i = $index) {
+                <div class="candidat-resultat" [class.gagnant]="c.estGagnant">
+
+                  <!-- Médaille + Avatar + Infos -->
+                  <div class="candidat-res-top">
+                    <div class="medaille">{{ getMedaille(i) }}</div>
+                    <div class="candidat-res-avatar" [style.background]="c.couleur">
+                      {{ c.initiales }}
+                    </div>
+                    <div class="candidat-res-info">
+                      <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <span class="candidat-res-nom">{{ c.nom }}</span>
+                        @if (c.estGagnant) {
+                          <span class="badge-gagnant">
+                            <i class="bi bi-trophy-fill me-1"></i>Élu
+                          </span>
+                        }
+                      </div>
+                      <span class="candidat-res-parti">{{ c.parti }}</span>
+                    </div>
+                    <div class="candidat-res-score">
+                      <span class="score-pct">{{ c.pourcentage }}%</span>
+                      <span class="score-votes">{{ c.nbVotes | number }} votes</span>
+                    </div>
+                  </div>
+
+                  <!-- Barre de résultat -->
+                  <div class="res-barre-fond">
+                    <div class="res-barre-remplie"
+                         [style.width]="getLargeurBarre(c.pourcentage)"
+                         [style.background]="c.couleur">
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ══════════ PANNEAU LATÉRAL (droite) ═══════════ -->
+        <div class="col-lg-4">
+
+          <!-- Résumé vainqueur -->
+          <div class="vainqueur-card mb-3">
+            <div class="vainqueur-header">
+              <i class="bi bi-trophy-fill text-warning me-2"></i>
+              Candidat élu
+            </div>
+            <div class="vainqueur-body">
+              <div class="vainqueur-avatar"
+                   [style.background]="candidats[0].couleur">
+                {{ candidats[0].initiales }}
+              </div>
+              <h5 class="vainqueur-nom">{{ candidats[0].nom }}</h5>
+              <p class="vainqueur-parti">{{ candidats[0].parti }}</p>
+              <div class="vainqueur-score">
+                <span class="vainqueur-pct">{{ candidats[0].pourcentage }}%</span>
+                <span class="vainqueur-votes">{{ candidats[0].nbVotes | number }} votes</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Certification du scrutin -->
+          <div class="certification-card mb-3">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <i class="bi bi-shield-fill-check text-success fs-5"></i>
+              <h6 class="mb-0 fw-bold">Scrutin certifié</h6>
+            </div>
+            <p class="certification-desc">
+              Ce scrutin a été conduit conformément aux standards Votify.
+              Les résultats sont chiffrés, vérifiables et immuables.
+            </p>
+            <div class="certification-items">
+              @for (item of ['Anonymat garanti', 'Résultats vérifiables', 'Chiffrement AES-256', 'Audit indépendant']; track item) {
+                <div class="certification-item">
+                  <i class="bi bi-check-circle-fill text-success"></i>
+                  <span>{{ item }}</span>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Autres scrutins -->
+          <div class="autres-card">
+            <h6 class="autres-titre">Autres résultats</h6>
+            @for (s of scrutinsRecents; track s.titre) {
+              <div class="autre-item">
+                <div class="org-avatar-sm" [style.background]="s.couleur">
+                  {{ s.initiales }}
+                </div>
+                <div class="autre-info">
+                  <p class="autre-titre">{{ s.titre }}</p>
+                  <p class="autre-org">{{ s.organisation }}</p>
+                </div>
+                <i class="bi bi-chevron-right text-muted"></i>
+              </div>
+            }
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="page-footer">
+      <span>© 2026 Votify. Tous droits réservés.</span>
+      <span class="text-muted">Résultats officiels — Chiffrement de bout en bout</span>
+    </footer>
+  </div>
+</div>

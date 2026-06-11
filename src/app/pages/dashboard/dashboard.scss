@@ -1,0 +1,598 @@
+// ============================================================
+// dashboard.component.scss
+// Layout sidebar + main fidèle à la maquette Votify
+// ============================================================
+
+$blue:       #2563EB;
+$blue-light: #EFF6FF;
+$dark:       #0f172a;
+$gray:       #6b7280;
+$sidebar-w:  210px;
+
+// ══════════════════════════════════════════════════════════
+// LAYOUT GLOBAL
+// ══════════════════════════════════════════════════════════
+.dashboard-wrapper {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background: #f1f5f9;
+}
+
+// ══════════════════════════════════════════════════════════
+// SIDEBAR
+// ══════════════════════════════════════════════════════════
+.sidebar {
+  width: $sidebar-w;
+  min-width: $sidebar-w;
+  height: 100vh;
+  background: white;
+  border-right: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem 0.75rem;
+  overflow-y: auto;
+}
+
+// Logo dans la sidebar
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  margin-bottom: 2rem;
+  padding: 0 0.5rem;
+}
+
+.sidebar-logo-icon {
+  width: 36px;
+  height: 36px;
+  background: $blue;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.sidebar-logo-text {
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: $dark;
+  letter-spacing: -0.03em;
+}
+
+// Navigation
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.sidebar-lien {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.65rem 0.85rem;
+  border-radius: 10px;
+  text-decoration: none;
+  color: $gray;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+
+  i { font-size: 1rem; }
+
+  &:hover {
+    background: $blue-light;
+    color: $blue;
+  }
+
+  // Onglet actif — fond bleu
+  &.actif {
+    background: $blue;
+    color: white !important;
+    font-weight: 600;
+  }
+}
+
+// Bouton déconnexion
+.btn-deconnexion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0.65rem 0.85rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #dc2626;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-align: left;
+  margin-top: 0.5rem;
+
+  &:hover { background: #fff5f5; }
+}
+
+.sidebar-copyright {
+  font-size: 0.68rem;
+  color: #9ca3af;
+  text-align: center;
+  margin: 0.75rem 0 0;
+  line-height: 1.4;
+}
+
+// ══════════════════════════════════════════════════════════
+// ZONE PRINCIPALE
+// ══════════════════════════════════════════════════════════
+.main-zone {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+// ── Topbar ────────────────────────────────────────────────
+.topbar {
+  height: 64px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.75rem;
+  flex-shrink: 0;
+}
+.profil{
+  display: flex;
+  margin-top: 1em;
+}
+.poste{
+  margin-left: 2px;
+  margin-top: 4px;
+}
+.name{
+  color: #0c2d7b;
+  font-weight: bold;
+}
+.topbar-titre {
+  font-weight: 600;
+  color: $gray;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.topbar-droite {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+// Barre de recherche
+.recherche-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f3f4f6;
+  border-radius: 10px;
+  padding: 0.45rem 0.9rem;
+
+  i { color: $gray; font-size: 0.85rem; }
+
+  input {
+    background: none;
+    border: none;
+    outline: none;
+    font-size: 0.85rem;
+    color: $dark;
+    width: 150px;
+
+    &::placeholder { color: #9ca3af; }
+  }
+}
+
+// Bouton notifications
+.btn-notif {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  color: $gray;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover { background: #f3f4f6; }
+}
+
+.notif-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 16px;
+  height: 16px;
+  background: #ef4444;
+  color: white;
+  font-size: 0.55rem;
+  font-weight: 700;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+}
+
+// Avatar topbar
+.avatar-topbar {
+  width: 36px;
+  height: 36px;
+  background: $blue;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+// ── Contenu scrollable ────────────────────────────────────
+.main-contenu {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.75rem;
+}
+
+// En-tête bienvenue
+.bienvenue-titre {
+  font-weight: 800;
+  font-size: 1.75rem;
+  color: $dark;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.25rem;
+}
+
+.bienvenue-sous-titre {
+  color: $gray;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+// ══════════════════════════════════════════════════════════
+// CARTES STATISTIQUES
+// ══════════════════════════════════════════════════════════
+.stat-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #f0f0f0;
+  padding: 1.4rem;
+  height: 100%;
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+  }
+}
+
+.stat-card-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.stat-card-titre {
+  font-size: 0.8rem;
+  color: $gray;
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+}
+
+.stat-card-valeur {
+  font-size: 1.9rem;
+  font-weight: 900;
+  color: $dark;
+  letter-spacing: -0.04em;
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.stat-variation {
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  &.positif { color: #16a34a; }
+  &.negatif { color: #dc2626; }
+}
+
+.stat-card-desc {
+  font-size: 0.78rem;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.stat-card-icone {
+  width: 44px;
+  height: 44px;
+  background: $blue-light;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: $blue;
+  flex-shrink: 0;
+}
+
+// ══════════════════════════════════════════════════════════
+// TABLEAUX
+// ══════════════════════════════════════════════════════════
+.tableau-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #f0f0f0;
+  padding: 1.5rem;
+  overflow: hidden;
+}
+
+.tableau-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.tableau-titre {
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: $dark;
+  margin-bottom: 0.25rem;
+}
+
+.tableau-sous-titre {
+  font-size: 0.82rem;
+  color: $gray;
+  margin: 0;
+}
+
+// Style du tableau Bootstrap
+.table {
+  thead tr th {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #9ca3af;
+    text-transform: uppercase;
+    border-bottom: 1px solid #f3f4f6;
+    padding: 0.75rem 1rem;
+    background: transparent;
+  }
+
+  tbody tr td {
+    padding: 0.9rem 1rem;
+    font-size: 0.875rem;
+    border-bottom: 1px solid #f9fafb;
+    vertical-align: middle;
+  }
+
+  tbody tr:hover td {
+    background: #fafafa;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+// ── Avatars initiales ─────────────────────────────────────
+.avatar-initiales {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  background: $blue-light;
+  color: $blue;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+// Point de statut en ligne (online/offline)
+.point-statut {
+  position: absolute;
+  bottom: 1px;
+  right: 1px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid white;
+
+  &.actif   { background: #22c55e; }
+  &.inactif { background: #9ca3af; }
+}
+
+// ── Badges de statut ──────────────────────────────────────
+.badge-statut {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  &.en-attente {
+    background: #fef3c7;
+    color: #92400e;
+  }
+
+  &.validee {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  &.refusee {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+
+  &.suspendu {
+    background: #fef3c7;
+    color: #92400e;
+  }
+}
+
+// ── Boutons d'action (valider/refuser) ────────────────────
+.btn-action {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1.5px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  background: white;
+
+  &.valider {
+    border-color: #16a34a;
+    color: #16a34a;
+    &:hover { background: #16a34a; color: white; }
+  }
+
+  &.refuser {
+    border-color: #dc2626;
+    color: #dc2626;
+    &:hover { background: #dc2626; color: white; }
+  }
+}
+
+// ── Boutons contrôle admin ────────────────────────────────
+.btn-controle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.4rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1.5px solid;
+  background: white;
+
+  &.desactiver {
+    color: #dc2626;
+    border-color: #dc2626;
+    &:hover { background: #dc2626; color: white; }
+  }
+
+  &.reactiver {
+    color: #16a34a;
+    border-color: #16a34a;
+    &:hover { background: #16a34a; color: white; }
+  }
+}
+
+.btn-dots {
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $gray;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+  }
+}
+
+// ── Boutons header tableau ────────────────────────────────
+.btn-tout-voir {
+  background: white;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 0.45rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: $gray;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: $blue;
+    color: $blue;
+  }
+}
+
+.btn-exporter {
+  background: white;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 0.45rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: $gray;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover { border-color: #9ca3af; }
+}
+
+.btn-ajouter {
+  background: $blue;
+  border: none;
+  border-radius: 10px;
+  padding: 0.45rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+
+  &:hover {
+    background: darken($blue, 8%);
+    box-shadow: 0 4px 12px rgba($blue, 0.3);
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// FOOTER
+// ══════════════════════════════════════════════════════════
+.dashboard-footer {
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.75rem;
+  color: #9ca3af;
+  border-top: 1px solid #f3f4f6;
+  background: white;
+  flex-shrink: 0;
+}

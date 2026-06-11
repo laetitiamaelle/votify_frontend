@@ -1,0 +1,308 @@
+<div class="dashboard-wrapper">
+
+  <aside class="sidebar">
+    <a href="/" class="sidebar-brand">
+      <div class="sidebar-logo-icon">
+        <i class="bi bi-check2-square"></i>
+      </div>
+      <span class="sidebar-logo-text">Votify</span>
+    </a>
+
+    <nav class="sidebar-nav">
+      @for (item of navItems; track item.route) {
+      <a class="sidebar-lien" [class.actif]="item.actif" (click)="setOnglet(item.route)" href="javascript:void(0)">
+        <i [class]="'bi ' + item.icone"></i>
+        <span>{{ item.label }}</span>
+      </a>
+      }
+    </nav>
+
+    <button (click)="onLogout()" class="btn-deconnexion">
+      <i class="bi bi-box-arrow-left text-danger"></i>
+      <span>Déconnexion</span>
+    </button>
+
+    <p class="sidebar-copyright">© 2026 Votify. Tous droits réservés.</p>
+  </aside>
+
+  <div class="main-zone">
+
+    <header class="topbar">
+      <h6 class="topbar-titre">Tableau de bord </h6>
+      <div class="topbar-droite"></div>
+      <div class="profil">
+        <div class="avatar-topbar">
+          {{ superAdmin?.username?.charAt(0)?.toUpperCase() }}
+        </div>
+        <div class="poste">
+          <p>SUPERADMIN/<span class="name">{{ superAdmin?.username }}</span></p>
+        </div>
+      </div>
+    </header>
+
+
+
+    <main class="main-contenu">
+
+      <div class="bienvenue mb-4">
+        <h3 class="bienvenue-titre">Bonjour, {{ superAdmin?.username }}</h3>
+        <p class="bienvenue-sous-titre">
+          Voici un aperçu de l'activité de votre plateforme aujourd'hui.
+        </p>
+      </div>
+
+      <div class="row g-3 mb-4">
+        @for (stat of stats; track stat.titre) {
+        <div class="col-sm-6 col-xl-3">
+          <div class="stat-card">
+            <div class="stat-card-body">
+              <div>
+                <p class="stat-card-titre">{{ stat.titre }}</p>
+                <h3 class="stat-card-valeur">
+                  {{ stat.valeur }}
+                  @if (stat.variation) {
+                  <span class="stat-variation" [class.positif]="stat.variationPositive">
+                    {{ stat.variation }}
+                  </span>
+                  }
+                </h3>
+                <p class="stat-card-desc">{{ stat.sousTitre }}</p>
+              </div>
+              <div class="stat-card-icone">
+                <i [class]="'bi ' + stat.icone"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+
+      <div class="tableau-card mb-4">
+        <div class="tableau-header">
+          <div>
+            <h5 class="tableau-titre">Demandes d'administrateurs</h5>
+            <p class="tableau-sous-titre">
+              Nouvelles candidatures pour gérer des scrutins sur la plateforme.
+            </p>
+          </div>
+          <button class="btn-tout-voir">Tout voir &rsaquo;</button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead>
+              <tr>
+                <th>NOM</th>
+                <th>EMAIL</th>
+                <th>TÉLÉPHONE</th>
+                <th>CNI</th>
+                <th>ORGANISATION</th>
+                <th>MOTIF</th>
+                <th>DATE</th>
+                <th>ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              @for (d of demandes; track d.id) {
+
+              <tr>
+
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="avatar-initiales">
+                      {{ d.nom ? d.nom.charAt(0).toUpperCase() : 'A' }}
+                    </div>
+
+                    <strong>{{ d.nom }}</strong>
+                  </div>
+                </td>
+
+                <td>
+                  {{ d.email }}
+                </td>
+
+                <td>
+                  {{ d.telephone }}
+                </td>
+
+                <td>
+                  {{ d.cni }}
+                </td>
+
+                <td>
+                  {{ d.organisation }}
+                </td>
+
+                <td style="max-width:300px">
+
+                  <span [title]="d.motif">
+
+                    {{ d.motif }}
+
+                  </span>
+
+                </td>
+
+                <td>
+                  {{ d.date_creation | date:'dd/MM/yyyy HH:mm' }}
+                </td>
+
+                <td>
+
+                  <div class="d-flex gap-2">
+
+                    <button class="btn-action valider" (click)="validerDemande(d.id)" title="Valider">
+
+                      <i class="bi bi-check-lg"></i>
+
+                    </button>
+
+                    <button class="btn-action refuser" (click)="refuserDemande(d.id)" title="Refuser">
+
+                      <i class="bi bi-x-lg"></i>
+
+                    </button>
+
+                    <!-- <button class="btn-action supprimer" (click)="supprimerDemande(d.id)" title="Supprimer">
+
+                      <i class="bi bi-trash"></i>
+
+                    </button> -->
+
+                  </div>
+
+                </td>
+
+              </tr>
+
+              }
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tableau-card">
+        <div class="tableau-header">
+          <div>
+            <h5 class="tableau-titre">Gestion des Administrateurs</h5>
+            <p class="tableau-sous-titre">
+              Consultez et gérez les droits des administrateurs actifs.
+            </p>
+          </div>
+          <button class="btn btn-primary" (click)="ouvrirModal()">
+            <i class="bi bi-plus-lg"></i> Nouveau Administrateur
+          </button>
+
+          @if (afficherModal) {
+          <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Créer un Nouvel Administrateur</h5>
+                  <button type="button" class="btn-close" (click)="fermerModal()"></button>
+                </div>
+
+                <form [formGroup]="adminForm" (ngSubmit)="soumettreAdmin()">
+                  <div class="modal-body">
+                    <div class="mb-3">
+                      <label class="form-label">Nom d'utilisateur</label>
+                      <input type="text" class="form-control" formControlName="username" placeholder="Ex: Jean Dupont">
+                      @if (adminForm.get('username')?.touched && adminForm.get('username')?.invalid) {
+                      <small class="text-danger">Le nom d'utilisateur est requis.</small>
+                      }
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Email</label>
+                      <input type="email" class="form-control" formControlName="email" placeholder="exemple@votify.com">
+                      @if (adminForm.get('email')?.touched && adminForm.get('email')?.invalid) {
+                      <small class="text-danger">Veuillez entrer un email valide.</small>
+                      }
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Téléphone</label>
+                      <input type="text" class="form-control" formControlName="telephone" placeholder="Ex: 693823659">
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Numéro CNI</label>
+                      <input type="text" class="form-control" formControlName="cni"
+                        placeholder="Numéro de carte d'identité">
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)="fermerModal()">Annuler</button>
+                    <button type="submit" class="btn btn-success" [disabled]="adminForm.invalid">Créer le
+                      compte</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead>
+              <tr>
+                <th>ADMIN</th>
+                <th>EMAIL</th>
+                <th>TÉLÉPHONE</th>
+                <th>STATUT</th>
+                <th>CONTRÔLE</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (admin of administrateurs; track admin.id) {
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="avatar-initiales position-relative">
+                      {{ admin.username ? admin.username.charAt(0).toUpperCase() : 'A' }}
+                      <span class="point-statut" [class.actif]="admin.is_active"
+                        [class.inactif]="!admin.is_active"></span>
+                    </div>
+                    <span class="fw-medium">{{ admin.username }}</span>
+                  </div>
+                </td>
+                <td class="text-muted">{{ admin.email }}</td>
+                <td class="text-muted">{{ admin.telephone || 'Non renseigné' }}</td>
+                <td>
+                  @if (admin.is_active) {
+                  <span class="badge-statut validee">Actif</span>
+                  } @else {
+                  <span class="badge-statut refusee">Suspendu</span>
+                  }
+                </td>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    @if (admin.is_active) {
+                    <button class="btn-controle desactiver" (click)="toggleStatutAdmin(admin)">
+                      <i class="bi bi-slash-circle"></i> Désactiver
+                    </button>
+                    } @else {
+                    <button class="btn-controle reactiver" (click)="toggleStatutAdmin(admin)">
+                      <i class="bi bi-arrow-counterclockwise"></i> Réactiver
+                    </button>
+                    }
+                  </div>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+
+    <footer class="dashboard-footer">
+      © 2026 Votify. Tous droits réservés. Sécurisé par chiffrement de bout en bout.
+    </footer>
+  </div>
+
+</div>

@@ -1,0 +1,212 @@
+<!-- ============================================================
+     DEMANDE ADMIN — demande-admin.component.html
+     Page de demande de compte administrateur.
+     Fidèle à la maquette : navbar + formulaire centré + badges
+     ============================================================ -->
+
+<!-- ══════════════════════════════════════════════════════════
+     NAVBAR
+     ══════════════════════════════════════════════════════════ -->
+<nav class="navbar-demande">
+  <div class="container d-flex align-items-center justify-content-between">
+    <a href="/" class="brand d-flex align-items-center gap-2">
+      <div class="brand-icon"><i class="bi bi-check2-square"></i></div>
+      <span class="brand-text">Votify</span>
+    </a>
+    <div class="d-flex align-items-center gap-3">
+      <a href="/login" class="lien-nav">Se connecter</a>
+      <a href="/login" class="btn-nav-primary">Commencer</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════
+     CONTENU PRINCIPAL
+     ══════════════════════════════════════════════════════════ -->
+<main class="demande-main">
+  <div class="container">
+
+    <!-- Lien retour -->
+    <a href="/" class="lien-retour">
+      <i class="bi bi-chevron-left"></i> Retour à l'accueil
+    </a>
+
+    <!-- ── Carte formulaire ─────────────────────────────── -->
+    <div class="formulaire-card">
+
+      <!-- Barre bleue en haut de la carte -->
+      <div class="card-top-bar"></div>
+
+      <div class="card-body-inner">
+
+        <!-- ── MESSAGE DE SUCCÈS (affiché après envoi) ─── -->
+        @if (envoye()) {
+        <div class="succes-container">
+          <div class="succes-icon">
+            <i class="bi bi-check-circle-fill"></i>
+          </div>
+          <h3 class="succes-titre">Demande envoyée !</h3>
+          <p class="succes-desc">
+            Notre équipe examinera votre demande sous 48h.
+            Vous recevrez une réponse à l'adresse e-mail fournie.
+          </p>
+          <button class="btn-nouvelle-demande" (click)="nouvelleDemandeq()">
+            Faire une nouvelle demande
+          </button>
+        </div>
+        }
+
+        <!-- ── FORMULAIRE (masqué après envoi) ─────────── -->
+        @if (!envoye()) {
+
+        <!-- Icône et titre -->
+        <div class="text-center mb-4">
+          <div class="form-icon-wrap">
+            <i class="bi bi-shield-check"></i>
+          </div>
+          <h2 class="form-titre">Demande de compte administrateur</h2>
+          <p class="form-sous-titre">
+            Rejoignez Votify pour organiser vos élections en toute simplicité.<br>
+            Notre équipe examinera votre demande sous 48h.
+          </p>
+        </div>
+
+        <!-- Formulaire réactif -->
+        <form [formGroup]="demandeForm" (ngSubmit)="onSubmit()" novalidate>
+
+          <!-- Ligne 1 : Nom + Email -->
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="label-field">Nom complet</label>
+              <div class="input-wrap">
+                <i class="bi bi-person input-icone"></i>
+                <input type="text" formControlName="nom" class="champ" [class.champ-erreur]="nom.invalid && nom.touched"
+                  placeholder="Jean Dupont">
+              </div>
+              @if (nom.invalid && nom.touched) {
+              <span class="msg-erreur">Le nom est requis.</span>
+              }
+            </div>
+
+            <div class="col-md-6">
+              <label class="label-field">Adresse Email</label>
+              <div class="input-wrap">
+                <i class="bi bi-envelope input-icone"></i>
+                <input type="email" formControlName="email" class="champ"
+                  [class.champ-erreur]="email.invalid && email.touched" placeholder="jean.dupont@exemple.com">
+              </div>
+              @if (email.invalid && email.touched) {
+              <span class="msg-erreur">
+                @if (email.errors?.['required']) { L'email est requis. }
+                @if (email.errors?.['email']) { Format invalide. }
+              </span>
+              }
+            </div>
+          </div>
+
+          <!-- Ligne 2 : Téléphone + CNI -->
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="label-field">Téléphone</label>
+              <div class="input-wrap">
+                <i class="bi bi-telephone input-icone"></i>
+                <input type="tel" formControlName="telephone" class="champ"
+                  [class.champ-erreur]="telephone.invalid && telephone.touched" placeholder="+221 77 000 00 00">
+              </div>
+              @if (telephone.invalid && telephone.touched) {
+              <span class="msg-erreur">Le téléphone est requis.</span>
+              }
+            </div>
+
+            <div class="col-md-6">
+              <label class="label-field">Numéro CNI / Passeport</label>
+              <div class="input-wrap">
+                <i class="bi bi-credit-card-2-front input-icone"></i>
+                <input type="text" formControlName="cni" class="champ" [class.champ-erreur]="cni.invalid && cni.touched"
+                  placeholder="1 234 1990 05678">
+              </div>
+              @if (cni.invalid && cni.touched) {
+              <span class="msg-erreur">Le numéro CNI est requis.</span>
+              }
+            </div>
+          </div>
+
+          <!-- Organisation -->
+          <div class="mb-3">
+            <label class="label-field">Organisation / Institution</label>
+            <select formControlName="organisation" class="champ">
+              <option value="">Sélectionner</option>
+              <option value="universite">Université</option>
+              <option value="ecole">École</option>
+              <option value="association">Association</option>
+              <option value="entreprise">Entreprise</option>
+              <option value="autre">Autre</option>
+            </select>
+            @if (organisation.invalid && organisation.touched) {
+            <span class="msg-erreur">L'organisation est requise.</span>
+            }
+          </div>
+
+          <!-- Motif de la demande -->
+          <div class="mb-4">
+            <label class="label-field">Motif de la demande</label>
+            <div class="input-wrap textarea-wrap">
+              <i class="bi bi-chat-left-text input-icone input-icone-top"></i>
+              <textarea formControlName="motif" class="champ champ-textarea"
+                [class.champ-erreur]="motif.invalid && motif.touched" rows="5"
+                placeholder="Expliquez brièvement pourquoi vous voulez un compte d'administration dans notre apllication...">
+                </textarea>
+            </div>
+            @if (motif.invalid && motif.touched) {
+            <span class="msg-erreur">Minimum 20 caractères.</span>
+            }
+          </div>
+
+          <!-- Bouton envoyer -->
+          <button type="submit" class="btn-envoyer">
+            <i class="bi bi-send-fill me-2"></i>
+            Envoyer la demande
+          </button>
+
+        </form>
+
+        <!-- Mentions légales -->
+        <p class="mentions-legales text-center mt-3">
+          En envoyant cette demande, vous acceptez nos
+          <a href="#" class="lien-bleu">conditions d'utilisation</a>
+          et notre
+          <a href="#" class="lien-bleu">politique de confidentialité</a>.
+        </p>
+        }
+      </div>
+    </div>
+
+    <!-- ── Badges de confiance ─────────────────────────── -->
+    <div class="row g-3 mt-4 badges-confiance">
+      <div class="col-md-4">
+        <div class="badge-card text-center">
+          <div class="badge-label text-primary">SÉCURISÉ</div>
+          <div class="badge-desc">Chiffrement AES-256</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="badge-card text-center">
+          <div class="badge-label text-primary">RAPIDE</div>
+          <div class="badge-desc">Réponse sous 48h</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="badge-card text-center">
+          <div class="badge-label text-primary">VÉRIFIÉ</div>
+          <div class="badge-desc">Contrôle d'identité</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="demande-footer">
+  © 2026 Votify. Tous droits réservés. Sécurisé par chiffrement de bout en bout.
+</footer>

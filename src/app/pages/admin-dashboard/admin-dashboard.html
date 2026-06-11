@@ -1,0 +1,849 @@
+<!-- admin-dashboard.component.html -->
+<div class="admin-wrapper">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" [class.sidebar-ouverte]="sidebarOuverte()">
+    <a href="/" class="sidebar-brand">
+      <div class="sidebar-logo-icon"><i class="bi bi-check2-square"></i></div>
+      <span class="sidebar-logo-text">Votify</span>
+    </a>
+    <nav class="sidebar-nav">
+      @for (item of navItems; track item.vue) {
+        <a class="sidebar-lien"
+           [class.actif]="vueActive() === item.vue || (item.vue === 'dashboard' && ['creer-scrutin','detail-scrutin','modifier-scrutin'].includes(vueActive()))"
+           (click)="aller(item.vue); sidebarOuverte.set(false)"
+           href="javascript:void(0)">
+          <i [class]="'bi ' + item.icone"></i>
+          <span>{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+    <button class="btn-deconnexion" (click)="deconnecter()">
+      <i class="bi bi-box-arrow-left text-danger"></i><span>Déconnexion</span>
+    </button>
+    <p class="sidebar-copyright">© 2026 Votify.</p>
+  </aside>
+
+  @if (sidebarOuverte()) {
+    <div class="sidebar-overlay" (click)="sidebarOuverte.set(false)"></div>
+  }
+
+  <div class="main-zone">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <button class="btn-hamburger d-lg-none" (click)="sidebarOuverte.update(v => !v)">
+        <i class="bi bi-list"></i>
+      </button>
+      <h6 class="topbar-titre">Tableau de bord Admin</h6>
+      <div class="topbar-droite">
+        <div class="recherche-top d-none d-md-flex">
+          <i class="bi bi-search"></i>
+          <input type="text" placeholder="Rechercher...">
+        </div>
+
+        <!-- Cloche notifications -->
+        <div class="notif-wrap">
+          <button class="btn-notif" (click)="toggleNotifs()">
+            <i class="bi bi-bell"></i>
+            @if (nbNotifsNonLues > 0) {
+              <span class="notif-badge">{{ nbNotifsNonLues }}</span>
+            }
+          </button>
+
+          @if (afficherNotifs()) {
+            <div class="notif-dropdown">
+              <div class="notif-header">
+                <span class="fw-semibold">Notifications</span>
+                <span class="text-muted small">{{ notifications.length }} au total</span>
+              </div>
+              @if (notifications.length === 0) {
+                <div class="notif-vide">
+                  <i class="bi bi-bell-slash fs-4 opacity-40 d-block mb-2"></i>
+                  Aucune notification
+                </div>
+              } @else {
+                @for (n of notifications; track n.id) {
+                  <div class="notif-item" [class.non-lue]="!n.lue">
+                    <i [class]="'bi ' + getIconeNotif(n.type) + ' notif-icone'"></i>
+                    <div class="notif-contenu">
+                      <p class="notif-msg">{{ n.message }}</p>
+                      <p class="notif-date">{{ n.date_creation | date:'dd/MM HH:mm' }}</p>
+                    </div>
+                  </div>
+                }
+              }
+            </div>
+          }
+        </div>
+
+        <div class="avatar-top" [title]="nomAffiche">{{ initialesUser }}</div>
+      </div>
+    </header>
+
+    <!-- Alertes -->
+    @if (erreur()) {
+      <div class="alerte-erreur">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ erreur() }}
+        <button class="btn-fermer-alerte" (click)="fermerMessage()"><i class="bi bi-x-lg"></i></button>
+      </div>
+    }
+    @if (msgSucces()) {
+      <div class="alerte-succes">
+        <i class="bi bi-check-circle-fill me-2"></i>{{ msgSucces() }}
+        <button class="btn-fermer-alerte" (click)="fermerMessage()"><i class="bi bi-x-lg"></i></button>
+      </div>
+    }
+    @if (envoiCandidats()) {
+      <div class="alerte-info">
+        <div class="spinner-border spinner-border-sm me-2"></div>Envoi des candidats...
+      </div>
+    }
+    @if (chargement()) { <div class="barre-chargement"></div> }
+
+    <!-- ══════ DASHBOARD ══════ -->
+    @if (vueActive() === 'dashboard') {
+      <main class="main-contenu">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+          <div>
+            <h3 class="page-titre">Bonjour{{ nomAffiche ? ', ' + nomAffiche : '' }} 👋</h3>
+            <p class="page-sous-titre">Voici un aperçu de vos activités électorales.</p>
+          </div>
+          <button class="btn-nouveau-scrutin" (click)="aller('creer-scrutin')">
+            <i class="bi bi-plus me-1"></i>Nouveau scrutin
+          </button>
+        </div>
+
+        <!-- Stats -->
+        <div class="row g-3 mb-4">
+          @for (stat of stats; track stat.titre) {
+            <div class="col-6 col-xl-3">
+              <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-start">
+                  <div>
+                    <p class="stat-label">{{ stat.titre }}</p>
+                    <h3 class="stat-valeur">{{ stat.valeur }}</h3>
+                    @if (stat.sousTitre) { <p class="stat-sous-titre">{{ stat.sousTitre }}</p> }
+                  </div>
+                  <div class="stat-icone"><i [class]="'bi ' + stat.icone"></i></div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Liste scrutins -->
+        <h5 class="section-titre mb-3">Mes scrutins</h5>
+
+        @if (chargement()) {
+          <div class="text-center py-5 text-muted">
+            <div class="spinner-border spinner-border-sm me-2"></div>Chargement...
+          </div>
+        } @else if (scrutins.length === 0) {
+          <div class="text-center py-5 text-muted">
+            <i class="bi bi-clipboard2 fs-2 d-block mb-2 opacity-40"></i>
+            Aucun scrutin créé.
+            <div class="mt-3">
+              <button class="btn-nouveau-scrutin" (click)="aller('creer-scrutin')">
+                <i class="bi bi-plus me-1"></i>Créer mon premier scrutin
+              </button>
+            </div>
+          </div>
+        } @else {
+          <div class="row g-3 mb-4">
+            @for (scrutin of scrutins; track scrutin.id) {
+              <div class="col-md-6 col-xl-4">
+                <div class="scrutin-card">
+                  <div class="scrutin-card-top">
+                    <span class="badge-statut" [ngClass]="'statut-' + scrutin.statut">
+                      <i [class]="'bi ' + getIconeStatut(scrutin.statut) + ' me-1'"></i>
+                      {{ getLibelleStatut(scrutin.statut) }}
+                    </span>
+                  </div>
+                  <h6 class="scrutin-titre">{{ scrutin.titre }}</h6>
+                  <p class="scrutin-date"><i class="bi bi-calendar3 me-1"></i>{{ scrutin.dateFin }}</p>
+                  <div class="barre-fond mb-1">
+                    <div class="barre-remplie"
+                         [style.width.%]="scrutin.participation"
+                         [style.background]="getCouleurParticipation(scrutin.participation)"></div>
+                  </div>
+                  <p class="participation-detail">{{ scrutin.participation }}% de participation</p>
+
+                  <!-- Actions : Détails + Modifier + Supprimer (si terminé) -->
+                  <div class="scrutin-actions">
+                    <button class="btn-details" (click)="voirDetail(scrutin)">
+                      <i class="bi bi-eye me-1"></i>Détails
+                    </button>
+                    <button class="btn-gerer" (click)="ouvrirModifier(scrutin)">
+                      <i class="bi bi-pencil me-1"></i>Modifier
+                    </button>
+                    @if (scrutin.statut === 'termine') {
+                      <button class="btn-supprimer" (click)="supprimerScrutin(scrutin)">
+                        <i class="bi bi-trash me-1"></i>Supprimer
+                      </button>
+                    }
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </main>
+      <footer class="page-footer">© 2026 Votify. Sécurisé par chiffrement de bout en bout.</footer>
+    }
+
+    <!-- ══════ CRÉER SCRUTIN ══════ -->
+    @if (vueActive() === 'creer-scrutin') {
+      <main class="main-contenu">
+        <a class="lien-retour mb-4 d-inline-flex" (click)="aller('dashboard')" href="javascript:void(0)">
+          <i class="bi bi-chevron-left me-1"></i>Retour
+        </a>
+        <h3 class="page-titre mb-1">Créer un nouveau scrutin</h3>
+        <p class="page-sous-titre mb-4">Remplissez les informations et ajoutez les candidats avant de valider.</p>
+
+        <div class="formulaire-card">
+          <form [formGroup]="scrutinForm" (ngSubmit)="onSubmitScrutin()" novalidate>
+
+            <div class="mb-3">
+              <label class="label-field">Titre du scrutin *</label>
+              <input type="text" formControlName="titre" class="champ"
+                     [class.champ-erreur]="scrutinForm.get('titre')!.invalid && scrutinForm.get('titre')!.touched"
+                     placeholder="Ex : Élection du Bureau des Étudiants 2024">
+              @if (scrutinForm.get('titre')!.invalid && scrutinForm.get('titre')!.touched) {
+                <span class="msg-erreur">Titre requis (min 5 caractères).</span>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label class="label-field">Description *</label>
+              <textarea formControlName="description" class="champ champ-textarea" rows="4"
+                        [class.champ-erreur]="scrutinForm.get('description')!.invalid && scrutinForm.get('description')!.touched"
+                        placeholder="Décrivez l'objectif de ce scrutin..."></textarea>
+              @if (scrutinForm.get('description')!.invalid && scrutinForm.get('description')!.touched) {
+                <span class="msg-erreur">Description requise.</span>
+              }
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="label-field">Date et heure de début *</label>
+                <div class="input-icon-wrap">
+                  <i class="bi bi-calendar3 input-icone"></i>
+                  <input type="datetime-local" formControlName="dateDebut" class="champ champ-date"
+                         [class.champ-erreur]="scrutinForm.get('dateDebut')!.invalid && scrutinForm.get('dateDebut')!.touched">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="label-field">Date et heure de fin *</label>
+                <div class="input-icon-wrap">
+                  <i class="bi bi-calendar3 input-icone"></i>
+                  <input type="datetime-local" formControlName="dateFin" class="champ champ-date"
+                         [class.champ-erreur]="scrutinForm.get('dateFin')!.invalid && scrutinForm.get('dateFin')!.touched">
+                </div>
+              </div>
+            </div>
+
+            <!-- Section candidats -->
+            <div class="section-candidats-toggle mb-4">
+              <button type="button" class="btn-toggle-candidats"
+                      (click)="afficherFormCandidats.update(v => !v)">
+                <i [class]="'bi ' + (afficherFormCandidats() ? 'bi-chevron-down' : 'bi-chevron-right') + ' me-2'"></i>
+                <i class="bi bi-people me-2"></i>
+                Candidats
+                <span class="badge-nb-candidats ms-2">{{ candidatsAAjouter.length }}</span>
+              </button>
+
+              @if (afficherFormCandidats()) {
+                <div class="candidats-section mt-3">
+                  <!-- Liste temporaire -->
+                  @if (candidatsAAjouter.length > 0) {
+                    <div class="candidats-liste mb-3">
+                      @for (c of candidatsAAjouter; track $index; let i = $index) {
+                        <div class="candidat-mini">
+                          @if (c.photoPreview) {
+                            <img [src]="c.photoPreview" class="candidat-mini-photo" alt="">
+                          } @else {
+                            <div class="candidat-mini-avatar" [style.background]="getCouleurCandidat(i)">
+                              {{ getInitiales(c.nom) }}
+                            </div>
+                          }
+                          <div class="candidat-mini-info">
+                            <span class="candidat-mini-nom">{{ c.nom }}</span>
+                            <span class="candidat-mini-poste">{{ c.poste }}</span>
+                          </div>
+                          <button type="button" class="btn-suppr-candidat" (click)="supprimerCandidatAAjouter(i)">
+                            <i class="bi bi-trash text-danger"></i>
+                          </button>
+                        </div>
+                      }
+                    </div>
+                  }
+
+                  <!-- Formulaire ajout -->
+                  <div class="ajout-candidat-form">
+                    <h6 class="ajout-titre"><i class="bi bi-person-plus me-2"></i>Ajouter un candidat</h6>
+                    <div class="row g-2 mb-2">
+                      <div class="col-md-4">
+                        <input type="text" class="champ champ-sm" [(ngModel)]="nouveauCandidat.nom"
+                               [ngModelOptions]="{standalone:true}" placeholder="Nom complet *">
+                      </div>
+                      <div class="col-md-4">
+                        <input type="text" class="champ champ-sm" [(ngModel)]="nouveauCandidat.poste"
+                               [ngModelOptions]="{standalone:true}" placeholder="Poste / Fonction">
+                      </div>
+                      <div class="col-md-4">
+                        <input type="text" class="champ champ-sm" [(ngModel)]="nouveauCandidat.description"
+                               [ngModelOptions]="{standalone:true}" placeholder="Programme">
+                      </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-3 mb-2">
+                      @if (nouveauCandidat.photoPreview) {
+                        <img [src]="nouveauCandidat.photoPreview" class="photo-preview-sm" alt="">
+                      } @else {
+                        <div class="photo-placeholder-sm"><i class="bi bi-person-fill"></i></div>
+                      }
+                      <label class="btn-upload-photo">
+                        <i class="bi bi-upload me-1"></i>Photo
+                        <input type="file" accept="image/*" hidden (change)="onPhotoSelected($event,'creation')">
+                      </label>
+                    </div>
+                    <button type="button" class="btn-ajouter-candidat" (click)="ajouterCandidatAAjouterListe()">
+                      <i class="bi bi-plus me-1"></i>Ajouter à la liste
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+
+            <button type="submit" class="btn-creer-scrutin" [disabled]="chargement() || envoiCandidats()">
+              @if (chargement() || envoiCandidats()) {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+              }
+              Créer le scrutin{{ candidatsAAjouter.length > 0 ? ' + ' + candidatsAAjouter.length + ' candidat(s)' : '' }}
+            </button>
+            <div class="text-center mt-3">
+              <a class="lien-annuler" (click)="aller('dashboard')" href="javascript:void(0)">Annuler</a>
+            </div>
+          </form>
+        </div>
+      </main>
+    }
+
+    <!-- ══════ DÉTAIL SCRUTIN ══════ -->
+    @if (vueActive() === 'detail-scrutin' && scrutinSelectionne()) {
+      <main class="main-contenu">
+        <a class="lien-retour mb-4 d-inline-flex" (click)="aller('dashboard')" href="javascript:void(0)">
+          <i class="bi bi-chevron-left me-1"></i>Retour
+        </a>
+
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+          <div>
+            <span class="badge-statut d-inline-flex mb-2" [ngClass]="'statut-' + scrutinSelectionne()!.statut">
+              <i [class]="'bi ' + getIconeStatut(scrutinSelectionne()!.statut) + ' me-1'"></i>
+              {{ getLibelleStatut(scrutinSelectionne()!.statut) }}
+            </span>
+            <h3 class="page-titre">{{ scrutinSelectionne()!.titre }}</h3>
+            <p class="page-sous-titre mb-1">
+              <i class="bi bi-calendar-check me-1 text-success"></i>
+              Début : {{ scrutinSelectionne()!.date_debut | date:'dd/MM/yyyy HH:mm' }}
+            </p>
+            <p class="page-sous-titre">
+              <i class="bi bi-calendar-x me-1 text-danger"></i>
+              Fin : {{ scrutinSelectionne()!.date_fin | date:'dd/MM/yyyy HH:mm' }}
+            </p>
+          </div>
+          <div class="d-flex gap-2 flex-wrap">
+            <button class="btn-gerer" (click)="ouvrirModifier(scrutinSelectionne()!)">
+              <i class="bi bi-pencil me-1"></i>Modifier
+            </button>
+            @if (scrutinSelectionne()!.statut === 'termine') {
+              <button class="btn-supprimer" (click)="supprimerScrutin(scrutinSelectionne()!)">
+                <i class="bi bi-trash me-1"></i>Supprimer
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="detail-card mb-4">
+          <div class="detail-card-header">
+            <h5 class="detail-card-titre"><i class="bi bi-file-text text-primary me-2"></i>Description</h5>
+          </div>
+          <p class="p-3 text-muted mb-0">{{ scrutinSelectionne()!.description }}</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="row g-3 mb-4">
+          <div class="col-6 col-lg-3">
+            <div class="stat-card">
+              <div class="stat-icone"><i class="bi bi-check2-circle"></i></div>
+              <div>
+                <p class="stat-label">Votes exprimés</p>
+                <h4 class="stat-valeur">{{ resultats ? resultats.total_votes : '--' }}</h4>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="stat-card">
+              <div class="stat-icone"><i class="bi bi-people-fill"></i></div>
+              <div>
+                <p class="stat-label">Candidats</p>
+                <h4 class="stat-valeur">{{ candidats.length }}</h4>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="stat-card">
+              <div class="stat-icone"><i class="bi bi-graph-up-arrow"></i></div>
+              <div>
+                <p class="stat-label">Participation</p>
+                <h4 class="stat-valeur">{{ scrutinSelectionne()!.participation }}%</h4>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="stat-card">
+              <div class="stat-icone"><i class="bi bi-person-check"></i></div>
+              <div>
+                <p class="stat-label">Statut</p>
+                <h4 class="stat-valeur" style="font-size:1rem">{{ getLibelleStatut(scrutinSelectionne()!.statut) }}</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <!-- Candidats -->
+          <div class="col-lg-8">
+            <div class="detail-card">
+              <div class="detail-card-header">
+                <h5 class="detail-card-titre">
+                  <i class="bi bi-people-fill text-primary me-2"></i>Candidats ({{ candidats.length }})
+                </h5>
+                <button class="btn-ajouter-small" (click)="afficherFormCandidatsDetail.update(v => !v)">
+                  <i class="bi bi-plus me-1"></i>Ajouter
+                </button>
+              </div>
+
+              <!-- Formulaire ajout inline -->
+              @if (afficherFormCandidatsDetail()) {
+                <div class="ajout-candidat-form mx-3 mb-3 p-3 border rounded">
+                  <h6 class="ajout-titre mb-3"><i class="bi bi-person-plus me-2"></i>Nouveau candidat</h6>
+                  <div class="row g-2 mb-2">
+                    <div class="col-md-4">
+                      <input type="text" class="champ champ-sm" [(ngModel)]="nouveauCandidatDetail.nom" placeholder="Nom complet *">
+                    </div>
+                    <div class="col-md-4">
+                      <input type="text" class="champ champ-sm" [(ngModel)]="nouveauCandidatDetail.poste" placeholder="Poste">
+                    </div>
+                    <div class="col-md-4">
+                      <input type="text" class="champ champ-sm" [(ngModel)]="nouveauCandidatDetail.description" placeholder="Programme">
+                    </div>
+                  </div>
+                  <div class="d-flex align-items-center gap-3 mb-2">
+                    @if (nouveauCandidatDetail.photoPreview) {
+                      <img [src]="nouveauCandidatDetail.photoPreview" class="photo-preview-sm" alt="">
+                    } @else {
+                      <div class="photo-placeholder-sm"><i class="bi bi-person-fill"></i></div>
+                    }
+                    <label class="btn-upload-photo">
+                      <i class="bi bi-upload me-1"></i>Photo
+                      <input type="file" accept="image/*" hidden (change)="onPhotoSelected($event,'detail')">
+                    </label>
+                  </div>
+                  <div class="d-flex gap-2">
+                    <button type="button" class="btn-ajouter-candidat" (click)="ajouterCandidatAuScrutin()">
+                      <i class="bi bi-check2 me-1"></i>Enregistrer
+                    </button>
+                    <button type="button" class="btn-annuler-btn" (click)="afficherFormCandidatsDetail.set(false)">Annuler</button>
+                  </div>
+                </div>
+              }
+
+              @if (chargement()) {
+                <div class="text-center p-4 text-muted">
+                  <div class="spinner-border spinner-border-sm me-2"></div>Chargement...
+                </div>
+              } @else if (candidats.length === 0) {
+                <div class="text-center p-4 text-muted">
+                  <i class="bi bi-person-x fs-3 d-block mb-2 opacity-40"></i>
+                  Aucun candidat. Cliquez sur "Ajouter".
+                </div>
+              } @else {
+                <!-- Grille candidats — toutes les infos visibles -->
+                <div class="row g-3 p-3">
+                  @for (c of candidats; track c.id; let i = $index) {
+                    <div class="col-sm-6">
+                      <div class="candidat-detail-card">
+                        <!-- Photo ou avatar -->
+                        <div class="candidat-detail-header">
+                          @if (c.photo_url) {
+                            <img [src]="c.photo_url" class="candidat-photo-lg" [alt]="c.nom">
+                          } @else {
+                            <div class="candidat-avatar-lg" [style.background]="getCouleurCandidat(i)">
+                              {{ getInitiales(c.nom) }}
+                            </div>
+                          }
+                          <!-- Résultat si disponible -->
+                          @if (resultats) {
+                            <div class="candidat-res-badge" [style.background]="getCouleurCandidat(i)">
+                              {{ getPourcentageCandidat(c.id) }}%
+                            </div>
+                          }
+                        </div>
+                        <div class="candidat-detail-body">
+                          <h6 class="candidat-nom-detail">{{ c.nom }}</h6>
+                          @if (c.poste) {
+                            <p class="candidat-poste-badge">{{ c.poste }}</p>
+                          }
+                          @if (c.description) {
+                            <p class="candidat-desc-detail">{{ c.description }}</p>
+                          }
+                          <!-- Barre résultat -->
+                          @if (resultats) {
+                            <div class="mt-2">
+                              <div class="d-flex justify-content-between mb-1">
+                                <span class="small text-muted">Votes</span>
+                                <span class="small fw-bold">{{ getVotesCandidat(c.id) }}</span>
+                              </div>
+                              <div class="mini-res-fond">
+                                <div class="mini-res-remplie"
+                                     [style.width]="getPourcentageCandidat(c.id) + '%'"
+                                     [style.background]="getCouleurCandidat(i)"></div>
+                              </div>
+                            </div>
+                          }
+                        </div>
+                        <div class="candidat-detail-footer">
+                          <button class="btn-suppr-candidat" (click)="supprimerCandidatAPI(c.id)" title="Supprimer">
+                            <i class="bi bi-trash text-danger"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Sidebar droite -->
+          <div class="col-lg-4">
+            <!-- Infos -->
+            <div class="detail-card mb-3">
+              <div class="detail-card-header">
+                <h5 class="detail-card-titre"><i class="bi bi-info-circle text-primary me-2"></i>Informations</h5>
+              </div>
+              <div class="p-3">
+                <div class="info-ligne">
+                  <span class="info-label">Statut</span>
+                  <span class="badge-statut" [ngClass]="'statut-' + scrutinSelectionne()!.statut">
+                    {{ getLibelleStatut(scrutinSelectionne()!.statut) }}
+                  </span>
+                </div>
+                <div class="info-ligne">
+                  <span class="info-label">Actif</span>
+                  <span class="info-valeur">
+                    <i [class]="scrutinSelectionne()!.actif ? 'bi bi-check-circle-fill text-success' : 'bi bi-x-circle-fill text-danger'"></i>
+                    {{ scrutinSelectionne()!.actif ? 'Oui' : 'Non' }}
+                  </span>
+                </div>
+                <div class="info-ligne">
+                  <span class="info-label">Créé le</span>
+                  <span class="info-valeur">{{ scrutinSelectionne()!.date_creation | date:'dd/MM/yyyy' }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Actions rapides -->
+            <div class="detail-card">
+              <div class="detail-card-header">
+                <h5 class="detail-card-titre">Actions rapides</h5>
+              </div>
+              <div class="d-flex flex-column gap-2 p-3">
+                <button class="btn-action-rapide" (click)="aller('inscriptions')">
+                  <i class="bi bi-person-plus me-2"></i>Voir les inscriptions
+                </button>
+                <button class="btn-action-rapide" (click)="aller('resultats')">
+                  <i class="bi bi-bar-chart-line me-2"></i>Voir les résultats
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    }
+
+    <!-- ══════ MODIFIER SCRUTIN ══════ -->
+    @if (vueActive() === 'modifier-scrutin' && scrutinSelectionne()) {
+      <main class="main-contenu">
+        <a class="lien-retour mb-4 d-inline-flex" (click)="voirDetail(scrutinSelectionne()!)" href="javascript:void(0)">
+          <i class="bi bi-chevron-left me-1"></i>Retour aux détails
+        </a>
+        <h3 class="page-titre mb-1">Modifier le scrutin</h3>
+        <p class="page-sous-titre mb-4">Modifiez les informations de votre élection.</p>
+
+        <div class="formulaire-card">
+          <form [formGroup]="modifierForm" (ngSubmit)="onSubmitModifier()" novalidate>
+            <div class="mb-3">
+              <label class="label-field">Titre *</label>
+              <input type="text" formControlName="titre" class="champ"
+                     [class.champ-erreur]="modifierForm.get('titre')!.invalid && modifierForm.get('titre')!.touched">
+              @if (modifierForm.get('titre')!.invalid && modifierForm.get('titre')!.touched) {
+                <span class="msg-erreur">Titre requis.</span>
+              }
+            </div>
+            <div class="mb-3">
+              <label class="label-field">Description</label>
+              <textarea formControlName="description" class="champ champ-textarea" rows="4"></textarea>
+            </div>
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <label class="label-field">Nouvelle date de début</label>
+                <div class="input-icon-wrap">
+                  <i class="bi bi-calendar3 input-icone"></i>
+                  <input type="datetime-local" formControlName="dateDebut" class="champ champ-date">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="label-field">Nouvelle date de fin</label>
+                <div class="input-icon-wrap">
+                  <i class="bi bi-calendar3 input-icone"></i>
+                  <input type="datetime-local" formControlName="dateFin" class="champ champ-date">
+                </div>
+              </div>
+            </div>
+            <div class="d-flex gap-3 flex-wrap">
+              <button type="submit" class="btn-creer-scrutin" [disabled]="chargement()">
+                @if (chargement()) { <span class="spinner-border spinner-border-sm me-2"></span> }
+                <i class="bi bi-check2 me-2"></i>Enregistrer
+              </button>
+              <button type="button" class="btn-annuler-btn" (click)="voirDetail(scrutinSelectionne()!)">Annuler</button>
+            </div>
+          </form>
+        </div>
+      </main>
+    }
+
+    <!-- ══════ INSCRIPTIONS ══════ -->
+    @if (vueActive() === 'inscriptions') {
+      <main class="main-contenu">
+        <h3 class="page-titre mb-1">Inscriptions</h3>
+        <p class="page-sous-titre mb-4">Gérez les demandes d'inscription des électeurs.</p>
+
+        <div class="filtres-wrap mb-4">
+          @for (f of [{key:'tous',label:'Tous'},{key:'en_attente',label:'En attente'},{key:'validee',label:'Validées'},{key:'refusee',label:'Refusées'}]; track f.key) {
+            <button class="btn-filtre" [class.actif]="filtreInscription === f.key" (click)="filtreInscription = f.key">
+              {{ f.label }}
+            </button>
+          }
+        </div>
+
+        @if (chargement()) {
+          <div class="text-center py-5 text-muted">
+            <div class="spinner-border spinner-border-sm me-2"></div>Chargement...
+          </div>
+        } @else {
+          <div class="tableau-card">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>ÉLECTEUR</th>
+                    <th>ORGANISATION</th>
+                    <th>SCRUTIN</th>
+                    <th>DATE</th>
+                    <th>STATUT</th>
+                    <th>ACTIONS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (insc of inscriptionsFiltrees; track insc.id) {
+                    <tr>
+                      <td>
+                        <div class="d-flex align-items-center gap-2">
+                          <div class="avatar-table">{{ getInitiales(insc.electeur_username ?? 'U') }}</div>
+                          <div>
+                            <span class="fw-medium d-block">{{ insc.nom_electeur || insc.electeur_username || 'Utilisateur #' + insc.electeur }}</span>
+                            <span class="text-muted small">{{ insc.electeur_email ?? '' }}</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="text-muted small">{{ insc.organisation || '—' }}</td>
+                      <td class="text-muted small">{{ insc.scrutin_titre ?? 'Scrutin #' + insc.scrutin }}</td>
+                      <td class="text-muted small">{{ insc.date_inscription | date:'dd/MM/yyyy' }}</td>
+                      <td>
+                        <span [class]="'badge-insc ' + getClasseInscription(insc.statut)">
+                          {{ getLibelleStatutInscription(insc.statut) }}
+                        </span>
+                      </td>
+                      <td>
+                        @if (insc.statut === 'en_attente') {
+                          <div class="d-flex gap-2">
+                            <button class="btn-valider-insc" (click)="validerInscription(insc.id)">
+                              <i class="bi bi-check-lg me-1"></i>Valider
+                            </button>
+                            <button class="btn-refuser-insc" (click)="refuserInscription(insc.id)">
+                              <i class="bi bi-x-lg me-1"></i>Refuser
+                            </button>
+                          </div>
+                        } @else {
+                          <span class="text-muted small">Traité</span>
+                        }
+                      </td>
+                    </tr>
+                  }
+                  @if (inscriptionsFiltrees.length === 0) {
+                    <tr>
+                      <td colspan="6" class="text-center py-4 text-muted">
+                        <i class="bi bi-inbox fs-3 d-block mb-2"></i>Aucune inscription
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        }
+      </main>
+    }
+
+    <!-- ══════ RÉSULTATS ══════ -->
+    @if (vueActive() === 'resultats') {
+      <main class="main-contenu">
+        <h3 class="page-titre mb-1">Résultats</h3>
+        <p class="page-sous-titre mb-4">Consultez les résultats de vos scrutins terminés.</p>
+
+        @if (scrutinsTermines.length === 0) {
+          <div class="text-center py-5 text-muted">
+            <i class="bi bi-bar-chart fs-2 d-block mb-2 opacity-40"></i>
+            Aucun scrutin terminé pour le moment.
+          </div>
+        } @else {
+          @for (s of scrutinsTermines; track s.id) {
+            <div class="resultat-card mb-3">
+              <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+                <div>
+                  <span class="badge-statut statut-termine mb-2 d-inline-flex">
+                    <i class="bi bi-check-circle-fill me-1"></i>Terminé
+                  </span>
+                  <h5 class="fw-bold text-dark">{{ s.titre }}</h5>
+                  <p class="text-muted small mb-1">{{ s.dateFin }}</p>
+                </div>
+                <button class="btn-voir-detail" (click)="voirDetail(s)">Voir le détail →</button>
+              </div>
+              <div class="barre-fond mt-2">
+                <div class="barre-remplie" [style.width.%]="s.participation"
+                     [style.background]="getCouleurParticipation(s.participation)"></div>
+              </div>
+              <p class="participation-detail mt-1">{{ s.participation }}% de participation</p>
+            </div>
+          }
+        }
+      </main>
+    }
+
+    <!-- ══════ PROFIL ══════ -->
+    @if (vueActive() === 'profil') {
+      <main class="main-contenu">
+        <h3 class="page-titre mb-1">Mon profil</h3>
+        <p class="page-sous-titre mb-4">Modifiez votre nom, téléphone et mot de passe.</p>
+
+        @if (profil) {
+          <div class="row g-4">
+            <div class="col-lg-4">
+              <div class="profil-card text-center">
+                <div class="profil-avatar">{{ initialesUser }}</div>
+                <h5 class="profil-nom">{{ nomAffiche }}</h5>
+                <p class="profil-role">Administrateur</p>
+                <p class="text-muted small">{{ profil.email }}</p>
+                @if (profil.telephone) { <p class="text-muted small">{{ profil.telephone }}</p> }
+                <span class="profil-badge-actif">
+                  <i class="bi bi-circle-fill me-1" style="font-size:.5rem"></i>Actif
+                </span>
+              </div>
+            </div>
+
+            <div class="col-lg-8">
+              <!-- Modifier nom + téléphone -->
+              <div class="formulaire-card mb-4">
+                <div class="form-section-header">
+                  <h5 class="form-section-titre">Informations personnelles</h5>
+                  <p class="form-section-desc">Modifiez votre nom d'utilisateur et votre téléphone.</p>
+                </div>
+                <form [formGroup]="profilForm" (ngSubmit)="onSubmitProfil()" novalidate>
+                  <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                      <label class="label-field">Nom d'utilisateur</label>
+                      <div class="input-icon-wrap">
+                        <i class="bi bi-person input-icone"></i>
+                        <br><input type="text" formControlName="username" class="champ"
+                               [class.champ-erreur]="profilForm.get('username')!.invalid && profilForm.get('username')!.touched">
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="label-field">Téléphone</label>
+                      <div class="input-icon-wrap">
+                        <br><i class="bi bi-telephone input-icone"></i>
+                        <input type="text" formControlName="telephone" class="champ" placeholder="+237 6XX XXX XXX">
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <label class="label-field">Email (non modifiable)</label>
+                      <div class="input-icon-wrap">
+                        <br><i class="bi bi-envelope input-icone"></i>
+                        <input type="text" class="champ" [value]="profil.email" readonly>
+                      </div>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn-creer-scrutin" [disabled]="modifProfilEnCours">
+                    @if (modifProfilEnCours) { <span class="spinner-border spinner-border-sm me-2"></span> }
+                    <i class="bi bi-check2 me-2"></i>Enregistrer les modifications
+                  </button>
+                </form>
+              </div>
+
+              <!-- Changer mot de passe -->
+              <div class="formulaire-card">
+                <div class="form-section-header">
+                  <h5 class="form-section-titre">Changer le mot de passe</h5>
+                  <p class="form-section-desc">Saisissez votre mot de passe actuel puis le nouveau.</p>
+                </div>
+                <form [formGroup]="mdpForm" (ngSubmit)="onSubmitMdp()" novalidate>
+                  <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                      <label class="label-field">Mot de passe actuel</label>
+                      <div class="input-icon-wrap">
+                        <i class="bi bi-lock input-icone"></i>
+                        <input type="password" formControlName="old_password" class="champ"
+                               [class.champ-erreur]="mdpForm.get('old_password')!.invalid && mdpForm.get('old_password')!.touched"
+                               placeholder="••••••••">
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="label-field">Nouveau mot de passe</label>
+                      <div class="input-icon-wrap">
+                        <i class="bi bi-lock-fill input-icone"></i>
+                        <input type="password" formControlName="new_password" class="champ"
+                               [class.champ-erreur]="mdpForm.get('new_password')!.invalid && mdpForm.get('new_password')!.touched"
+                               placeholder="Min. 6 caractères">
+                      </div>
+                      @if (mdpForm.get('new_password')!.invalid && mdpForm.get('new_password')!.touched) {
+                        <span class="msg-erreur">Min. 6 caractères requis.</span>
+                      }
+                    </div>
+                  </div>
+                  <button type="submit" class="btn-creer-scrutin" [disabled]="modifMdpEnCours">
+                    @if (modifMdpEnCours) { <span class="spinner-border spinner-border-sm me-2"></span> }
+                    <i class="bi bi-shield-lock me-2"></i>Changer le mot de passe
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        }
+      </main>
+    }
+
+  </div>
+</div>

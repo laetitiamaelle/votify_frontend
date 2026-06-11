@@ -1,0 +1,293 @@
+// ============================================================
+// creer-scrutin.component.scss
+// ============================================================
+
+$blue:       #2563EB;
+$blue-dark:  #1D4ED8;
+$blue-light: #EFF6FF;
+$dark:       #0f172a;
+$gray:       #6b7280;
+$border:     #e5e7eb;
+$sidebar-w:  210px;
+
+// ══════════════════════════════════════════════════════════
+// LAYOUT
+// ══════════════════════════════════════════════════════════
+.admin-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background: #f1f5f9;
+}
+
+// ══════════════════════════════════════════════════════════
+// SIDEBAR
+// ══════════════════════════════════════════════════════════
+.sidebar {
+  width: $sidebar-w;
+  min-width: $sidebar-w;
+  min-height: 100vh;
+  background: white;
+  border-right: 1px solid $border;
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem 0.75rem;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+
+  // Masquer sur mobile
+  @media (max-width: 768px) { display: none; }
+}
+
+.sidebar-brand {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none; margin-bottom: 2rem; padding: 0 0.5rem;
+}
+
+.sidebar-logo-icon {
+  width: 36px; height: 36px; background: $blue;
+  border-radius: 10px; display: flex; align-items: center;
+  justify-content: center; color: white; font-size: 1.1rem;
+}
+
+.sidebar-logo-text {
+  font-weight: 800; font-size: 1.1rem;
+  color: $dark; letter-spacing: -0.03em;
+}
+
+.sidebar-nav {
+  display: flex; flex-direction: column; gap: 4px; flex: 1;
+}
+
+.sidebar-lien {
+  display: flex; align-items: center; gap: 10px;
+  padding: 0.65rem 0.85rem; border-radius: 10px;
+  text-decoration: none; color: $gray;
+  font-size: 0.875rem; font-weight: 500;
+  transition: all 0.2s; cursor: pointer;
+  i { font-size: 1rem; }
+  &:hover { background: $blue-light; color: $blue; }
+  &.actif { background: $blue; color: white !important; font-weight: 600; }
+}
+
+.btn-deconnexion {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; background: none; border: none;
+  padding: 0.65rem 0.85rem; border-radius: 10px;
+  font-size: 0.875rem; font-weight: 500;
+  color: #dc2626; cursor: pointer;
+  transition: background 0.2s; text-align: left;
+  &:hover { background: #fff5f5; }
+}
+
+// ══════════════════════════════════════════════════════════
+// ZONE PRINCIPALE
+// ══════════════════════════════════════════════════════════
+.main-zone {
+  flex: 1; display: flex; flex-direction: column;
+  min-width: 0;
+}
+
+.topbar {
+  height: 64px; background: white;
+  border-bottom: 1px solid $border;
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 0 1.75rem;
+  position: sticky; top: 0; z-index: 10;
+
+  @media (max-width: 576px) { padding: 0 1rem; }
+}
+
+.topbar-titre {
+  font-weight: 600; color: $gray; margin: 0; font-size: 0.95rem;
+}
+
+.topbar-droite {
+  display: flex; align-items: center; gap: 0.75rem;
+}
+
+.recherche-box {
+  display: flex; align-items: center; gap: 8px;
+  background: #f3f4f6; border-radius: 10px;
+  padding: 0.45rem 0.9rem;
+  i { color: $gray; font-size: 0.85rem; }
+  input {
+    background: none; border: none; outline: none;
+    font-size: 0.85rem; color: $dark; width: 130px;
+    &::placeholder { color: #9ca3af; }
+    @media (max-width: 576px) { width: 80px; }
+  }
+  @media (max-width: 480px) { display: none; }
+}
+
+.btn-notif {
+  width: 38px; height: 38px; background: none; border: none;
+  border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; font-size: 1.1rem; color: $gray; cursor: pointer;
+  &:hover { background: #f3f4f6; }
+}
+
+.avatar-initiales-photo {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, $blue, $blue-dark);
+  color: white; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem; font-weight: 700; cursor: pointer;
+}
+
+.main-contenu {
+  padding: 1.75rem;
+  @media (max-width: 576px) { padding: 1.25rem 1rem; }
+}
+
+// ══════════════════════════════════════════════════════════
+// EN-TÊTE
+// ══════════════════════════════════════════════════════════
+.page-titre {
+  font-weight: 900; font-size: 1.7rem;
+  color: $dark; letter-spacing: -0.03em; margin-bottom: 0.25rem;
+  @media (max-width: 576px) { font-size: 1.3rem; }
+}
+
+.page-sous-titre { color: $gray; font-size: 0.9rem; margin: 0; }
+
+.btn-nouveau-projet {
+  background: white; color: $blue;
+  border: 1.5px solid $blue;
+  border-radius: 10px; padding: 0.55rem 1.1rem;
+  font-size: 0.85rem; font-weight: 600;
+  cursor: pointer; display: flex; align-items: center;
+  transition: all 0.2s;
+  &:hover { background: $blue-light; }
+}
+
+// ══════════════════════════════════════════════════════════
+// CARTE FORMULAIRE
+// ══════════════════════════════════════════════════════════
+.formulaire-card {
+  background: white; border-radius: 20px;
+  border: 1px solid $border;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+  padding: 2rem;
+  max-width: 760px;
+
+  @media (max-width: 576px) { padding: 1.25rem; }
+}
+
+.section-header { margin-bottom: 1.5rem; }
+
+.section-titre {
+  font-weight: 800; font-size: 1.1rem; color: $dark; margin-bottom: 0.25rem;
+}
+
+.section-desc { font-size: 0.85rem; color: $gray; margin: 0; }
+
+// ── Champs ────────────────────────────────────────────────
+.label-field {
+  display: block; font-weight: 600;
+  font-size: 0.875rem; color: $dark; margin-bottom: 0.45rem;
+}
+
+.champ {
+  width: 100%;
+  border: 1.5px solid $border; border-radius: 12px;
+  padding: 0.75rem 1rem; font-size: 0.875rem; color: $dark;
+  background: white; outline: none;
+  transition: all 0.2s ease;
+
+  &::placeholder { color: #9ca3af; }
+  &:focus { border-color: $blue; box-shadow: 0 0 0 3px rgba($blue, 0.1); }
+  &.champ-erreur { border-color: #ef4444; }
+}
+
+.champ-textarea { resize: vertical; min-height: 140px; }
+
+.champ-date { padding-left: 2.75rem; cursor: pointer; }
+
+.input-date-wrap {
+  position: relative;
+  .input-icone {
+    position: absolute; left: 14px; top: 50%;
+    transform: translateY(-50%);
+    color: $gray; font-size: 0.95rem; pointer-events: none;
+  }
+}
+
+.hint-texte {
+  font-size: 0.78rem; color: #9ca3af; margin-top: 0.4rem;
+}
+
+.msg-erreur {
+  color: #ef4444; font-size: 0.78rem; margin-top: 0.3rem; display: block;
+}
+
+// ══════════════════════════════════════════════════════════
+// CARTES DE VISIBILITÉ
+// ══════════════════════════════════════════════════════════
+.visibilite-card {
+  border: 1.5px solid $border; border-radius: 14px;
+  padding: 1.25rem; cursor: pointer;
+  transition: all 0.2s ease; position: relative;
+  display: flex; flex-direction: column; gap: 0.75rem;
+  height: 100%;
+
+  &:hover { border-color: $blue; box-shadow: 0 4px 12px rgba($blue, 0.08); }
+
+  &.actif {
+    border-color: $blue;
+    background: $blue-light;
+    box-shadow: 0 4px 16px rgba($blue, 0.12);
+  }
+}
+
+.visibilite-radio {
+  position: absolute; top: 1rem; right: 1rem;
+  font-size: 1.1rem;
+}
+
+.visibilite-icone {
+  width: 44px; height: 44px;
+  background: #f3f4f6; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; color: $gray;
+  transition: all 0.2s;
+
+  &.actif { background: $blue; color: white; }
+}
+
+.visibilite-titre {
+  font-weight: 700; font-size: 0.95rem; color: $dark; margin-bottom: 0.25rem;
+}
+
+.visibilite-desc {
+  font-size: 0.82rem; color: $gray; line-height: 1.55; margin: 0;
+}
+
+// ══════════════════════════════════════════════════════════
+// BOUTONS
+// ══════════════════════════════════════════════════════════
+.btn-creer-scrutin {
+  width: 100%; background: $blue; color: white;
+  border: none; border-radius: 14px;
+  padding: 1rem; font-size: 1rem; font-weight: 700;
+  cursor: pointer; transition: all 0.25s;
+
+  &:hover {
+    background: $blue-dark;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba($blue, 0.35);
+  }
+}
+
+.lien-annuler {
+  color: $gray; font-size: 0.875rem;
+  text-decoration: none; transition: color 0.2s;
+  &:hover { color: $dark; }
+}
+
+.mention-legale {
+  color: #9ca3af; font-size: 0.78rem;
+  line-height: 1.6; max-width: 600px; margin: 0 auto;
+}

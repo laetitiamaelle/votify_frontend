@@ -1,0 +1,144 @@
+<!-- ============================================================
+     PAGE LOGIN — login.component.html
+     Design split-screen (maquette Visily) :
+     - Gauche (48%) : panneau bleu avec branding Votify
+     - Droite (52%) : formulaire de connexion
+     ============================================================ -->
+
+<div class="login-wrapper">
+
+  <!-- ══════════════════════════════════════════════════════
+       PANNEAU GAUCHE — Branding bleu
+       ══════════════════════════════════════════════════════ -->
+  <div class="login-gauche">
+
+    <!-- Lien retour -->
+    <a href="/" class="lien-retour">
+      <i class="bi bi-chevron-left"></i>
+      Retour à l'accueil
+    </a>
+
+    <!-- Contenu central -->
+    <div class="gauche-contenu">
+
+      <!-- Logo cercle -->
+      <div class="logo-cercle">
+        <i class="bi bi-check2-square"></i>
+      </div>
+
+      <h2 class="gauche-titre">
+        La démocratie à portée de clic.
+      </h2>
+
+      <p class="gauche-desc">
+        Rejoignez des milliers d'organisations qui font confiance à Votify
+        pour des élections transparentes, sécurisées et instantanées.
+      </p>
+    </div>
+
+    <!-- Badge sécurité en bas -->
+
+
+    <!-- Copyright -->
+
+
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       PANNEAU DROIT — Formulaire
+       ══════════════════════════════════════════════════════ -->
+  <div class="login-droite">
+    <div class="formulaire-container">
+
+      <!-- En-tête -->
+      <h2 class="form-titre">Bon retour</h2>
+      <p class="form-sous-titre">
+        Veuillez saisir vos identifiants pour accéder à votre espace de vote.
+      </p>
+
+      <!-- ────────────────────────────────────────────────
+           FORMULAIRE RÉACTIF
+           [formGroup] relie le HTML au FormGroup TypeScript
+           (ngSubmit) appelle onSubmit() au clic sur submit
+           ──────────────────────────────────────────────── -->
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+
+        <!-- Champ Email -->
+        <div class="mb-4">
+          <label class="form-label-custom">email</label>
+          <div class="input-group-custom">
+            <span class="input-icon">
+              <i class="bi bi-envelope"></i>
+            </span>
+            <input type="text" formControlName="email" class="form-control-custom"
+              [class.is-invalid]="email.invalid && email.touched" placeholder="Votre nom d'utilisateur">
+          </div>
+          <!-- Messages d'erreur (affichés seulement si le champ est touché) -->
+          @if (email.invalid && email.touched) {
+          <div class="error-msg">
+
+            @if (email.errors?.['required'])
+            {
+            L'email est requis.
+            }
+          </div>
+          }
+        </div>
+
+        <!-- Champ Mot de passe -->
+        <div class="mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <label class="form-label-custom mb-0">Mot de passe</label>
+           
+          </div>
+          <div class="input-group-custom">
+            <span class="input-icon">
+              <i class="bi bi-lock"></i>
+            </span>
+            <!-- Le type change selon afficherMotDePasse() -->
+            <input [type]="afficherMotDePasse() ? 'text' : 'password'" formControlName="password"
+              class="form-control-custom with-toggle" [class.is-invalid]="password.invalid && password.touched"
+              placeholder="••••••••">
+            <!-- Bouton œil pour afficher/masquer -->
+            <button type="button" class="toggle-password" (click)="toggleMotDePasse()">
+              <i [class]="'bi ' + (afficherMotDePasse() ? 'bi-eye-slash' : 'bi-eye')"></i>
+            </button>
+          </div>
+          @if (password.invalid && password.touched) {
+          <div class="error-msg">
+            @if (password.errors?.['required']) { Le mot de passe est requis. }
+            @if (password.errors?.['minlength']) { Minimum 6 caractères requis. }
+          </div>
+          }
+        </div>
+
+        <!-- Case à cocher "Se souvenir de moi" -->
+        <!-- <div class="mb-4">
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="remember" class="checkbox-input">
+            <span class="checkbox-custom"></span>
+            Se souvenir de moi sur cet appareil
+          </label>
+        </div> -->
+
+        <!-- Bouton de connexion -->
+        <button type="submit" class="btn-connexion">
+          Se connecter
+
+        </button>
+
+      </form>
+
+      <!-- Liens secondaires -->
+      <div class="liens-secondaires">
+        <p class="text-center">
+          Pas encore inscrit ?
+          <a href="register" class="lien-bleu">Créer un compte électeur</a>
+        </p>
+
+
+
+      </div>
+    </div>
+
+  </div>

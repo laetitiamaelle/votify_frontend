@@ -1,0 +1,94 @@
+<!-- mes-scrutins.component.html -->
+<div class="electeur-wrapper">
+  <aside class="sidebar">
+    <a href="/" class="sidebar-brand">
+      <div class="sidebar-logo-icon"><i class="bi bi-check2-square"></i></div>
+      <span class="sidebar-logo-text">Votify</span>
+    </a>
+    <nav class="sidebar-nav">
+      @for (item of navItems; track item.route) {
+        <a class="sidebar-lien" [class.actif]="item.actif"
+           (click)="setOnglet(item.route)" href="javascript:void(0)">
+          <i [class]="'bi ' + item.icone"></i>
+          <span>{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+    <button class="btn-deconnexion">
+      <i class="bi bi-box-arrow-left text-danger"></i><span>Déconnexion</span>
+    </button>
+  </aside>
+
+  <div class="main-zone">
+    <header class="topbar">
+      <h6 class="topbar-titre">Mes scrutins</h6>
+      <div class="topbar-droite">
+        <button class="btn-notif"><i class="bi bi-bell"></i></button>
+        <div class="avatar-top">ÉL</div>
+      </div>
+    </header>
+
+    <main class="main-contenu">
+      <div class="mb-4">
+        <h3 class="page-titre">Mes scrutins</h3>
+        <p class="page-sous-titre">Retrouvez tous les scrutins auxquels vous participez ou avez participé.</p>
+      </div>
+
+      <!-- Filtres -->
+      <div class="filtres-wrap mb-4">
+        @for (f of filtres; track f.key) {
+          <button class="btn-filtre" [class.actif]="filtreActif === f.key"
+                  (click)="setFiltreActif(f.key)">
+            {{ f.label }}
+          </button>
+        }
+      </div>
+
+      <!-- Liste des scrutins -->
+      <div class="scrutins-liste">
+        @for (s of scrutinsFiltres; track s.id) {
+          <div class="scrutin-ligne">
+            <div class="org-avatar-lg" [style.background]="s.orgCouleur">
+              {{ s.orgInitiales }}
+            </div>
+            <div class="scrutin-info">
+              <h6 class="scrutin-titre-ligne">{{ s.titre }}</h6>
+              <p class="scrutin-org-ligne">
+                <i class="bi bi-building me-1"></i>{{ s.organisation }}
+                &nbsp;·&nbsp;
+                <i class="bi bi-calendar3 me-1"></i>{{ s.dateFin }}
+              </p>
+              @if (s.participation !== undefined) {
+                <div class="mini-barre-wrap">
+                  <div class="mini-barre-fond">
+                    <div class="mini-barre-remplie"
+                         [style.width.%]="(s.participation! / s.totalElecteurs!) * 100">
+                    </div>
+                  </div>
+                  <span class="mini-barre-texte">
+                    {{ s.participation | number }}/{{ s.totalElecteurs | number }} votes
+                  </span>
+                </div>
+              }
+            </div>
+            <div class="scrutin-actions-ligne">
+              <span class="badge-statut-ligne" [ngClass]="'statut-' + s.statut">
+                {{ getLibelleStatut(s.statut) }}
+              </span>
+              <button class="btn-scrutin-action" [class.vote]="s.aVote">
+                {{ getBoutonLabel(s) }}
+              </button>
+            </div>
+          </div>
+        }
+
+        @if (scrutinsFiltres.length === 0) {
+          <div class="vide-message">
+            <i class="bi bi-clipboard2-x fs-2 d-block mb-2 opacity-40"></i>
+            Aucun scrutin dans cette catégorie.
+          </div>
+        }
+      </div>
+    </main>
+  </div>
+</div>

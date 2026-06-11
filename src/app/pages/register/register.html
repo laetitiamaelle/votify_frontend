@@ -1,0 +1,153 @@
+<!-- ============================================================
+     INSCRIPTION ÉLECTEUR — register.component.html
+     Design split-screen fidèle à la maquette :
+     Gauche = fond bleu clair + argumentaire
+     Droite = formulaire de création de compte
+     ============================================================ -->
+
+<div class="register-wrapper">
+
+  <!-- ══════════════════════════════════════════════════════
+       PANNEAU GAUCHE — Argumentaire
+       ══════════════════════════════════════════════════════ -->
+  <div class="register-gauche">
+
+    <!-- Logo -->
+    <a href="/" class="brand d-flex align-items-center gap-2 mb-5">
+      <div class="brand-icon"><i class="bi bi-check2-square"></i></div>
+      <span class="brand-text">Votify</span>
+    </a>
+
+    <!-- Titre principal -->
+    <h1 class="gauche-titre">
+      Façonnez l'avenir de votre organisation
+    </h1>
+    <p class="gauche-sous-titre">
+      Rejoignez des milliers d'électeurs qui font confiance à Votify
+      pour des scrutins transparents et sécurisés.
+    </p>
+
+    <!-- Arguments / points forts -->
+    <div class="arguments-liste mt-4">
+      @for (arg of arguments; track arg.titre) {
+      <div class="argument-item">
+        <div class="argument-icone">
+          <i [class]="'bi ' + arg.icone"></i>
+        </div>
+        <div>
+          <h6 class="argument-titre">{{ arg.titre }}</h6>
+          <p class="argument-desc">{{ arg.description }}</p>
+        </div>
+      </div>
+      }
+    </div>
+
+    <!-- Témoignage en bas -->
+    <div class="temoignage mt-auto pt-4">
+      <p class="temoignage-texte">
+        "Votify a transformé nos élections étudiantes en un processus fluide et incontestable."
+      </p>
+      <p class="temoignage-auteur">— Université Lumière, Lyon</p>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       PANNEAU DROIT — Formulaire
+       ══════════════════════════════════════════════════════ -->
+  <div class="register-droite">
+    <div class="form-container">
+
+      <!-- Titre -->
+      <h2 class="form-titre">Créer mon compte</h2>
+      <p class="form-sous-titre">
+        Inscrivez-vous pour commencer à participer aux scrutins de votre communauté.
+      </p>
+
+      <!-- Formulaire réactif -->
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
+
+        <!-- Nom complet -->
+        <div class="mb-3">
+          <label class="label-field">nom</label>
+          <div class="input-wrap">
+            <i class="bi bi-person input-icone"></i>
+            <input type="text" formControlName="first_name" class="champ" [class.champ-erreur]="first_name.invalid && first_name.touched"
+              placeholder="Jean Dupont">
+          </div>
+          <!-- @if (username.invalid && username.touched) {
+          <span class="msg-erreur">Le nom d'utilisateur  est requis.</span>
+          } -->
+        </div>
+
+        <!-- Adresse e-mail -->
+        <div class="mb-3">
+          <label class="label-field">Adresse e-mail</label>
+          <div class="input-wrap">
+            <i class="bi bi-envelope input-icone"></i>
+            <input type="email" formControlName="email" class="champ"
+              [class.champ-erreur]="email.invalid && email.touched" placeholder="jean.dupont@exemple.com">
+          </div>
+          @if (email.invalid && email.touched) {
+          <span class="msg-erreur">
+            @if (email.errors?.['required']) { L'email est requis. }
+            @if (email.errors?.['email']) { Format d'email invalide. }
+          </span>
+          }
+        </div>
+
+        <!-- Numéro de téléphone -->
+        <div class="mb-3">
+          <label class="label-field">Numéro de téléphone</label>
+          <div class="input-wrap">
+            <i class="bi bi-telephone input-icone"></i>
+            <input type="tel" formControlName="telephone" class="champ"
+              [class.champ-erreur]="telephone.invalid && telephone.touched" placeholder="06 12 34 56 78">
+          </div>
+          @if (telephone.invalid && telephone.touched) {
+          <span class="msg-erreur">Le numéro de téléphone est requis.</span>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="label-field">Numéro CNI</label>
+
+          <div class="input-wrap">
+            <i class="bi bi-card-text input-icone"></i>
+
+            <input type="text" formControlName="cni" class="champ" [class.champ-erreur]="cni.invalid && cni.touched"
+              placeholder="123456789">
+          </div>
+
+          @if (cni.invalid && cni.touched) {
+          <span class="msg-erreur">
+            Le numéro CNI est requis.
+          </span>
+          }
+        </div>
+        <!-- Conditions d'utilisation -->
+       
+
+        <!-- Bouton créer compte -->
+        <button type="submit" class="btn-creer">
+          Créer mon compte
+        </button>
+
+      </form>
+
+      <!-- Séparateur "OU CONTINUER AVEC" -->
+     
+
+      <!-- Boutons sociaux -->
+      
+
+      <!-- Lien connexion -->
+      <p class="text-center text-muted" style="font-size:.875rem">
+        Déjà un compte ?
+        <a href="/login" class="lien-bleu fw-semibold">Se connecter</a>
+      </p>
+
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,216 @@
+<!-- ============================================================
+     CRÉER UN SCRUTIN — creer-scrutin.component.html
+     Layout sidebar + formulaire centré
+     Fidèle à la maquette Visily.
+     ============================================================ -->
+
+<div class="admin-wrapper">
+
+  <!-- ══════════════════ SIDEBAR ═══════════════════════════ -->
+  <aside class="sidebar">
+    <a href="/admin" class="sidebar-brand">
+      <div class="sidebar-logo-icon"><i class="bi bi-check2-square"></i></div>
+      <span class="sidebar-logo-text">Votify</span>
+    </a>
+
+    <nav class="sidebar-nav">
+      @for (item of navItems; track item.route) {
+        <a class="sidebar-lien" [class.actif]="item.actif"
+           (click)="setOnglet(item.route)" href="javascript:void(0)">
+          <i [class]="'bi ' + item.icone"></i>
+          <span>{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+
+    <button class="btn-deconnexion">
+      <i class="bi bi-box-arrow-left text-danger"></i>
+      <span>Déconnexion</span>
+    </button>
+  </aside>
+
+  <!-- ══════════════════ ZONE PRINCIPALE ═══════════════════ -->
+  <div class="main-zone">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <h6 class="topbar-titre">Tableau de bord</h6>
+      <div class="topbar-droite">
+        <div class="recherche-box">
+          <i class="bi bi-search"></i>
+          <input type="text" placeholder="Rechercher...">
+        </div>
+        <button class="btn-notif"><i class="bi bi-bell"></i></button>
+        <div class="avatar-initiales-photo">ML</div>
+      </div>
+    </header>
+
+    <!-- Contenu -->
+    <main class="main-contenu">
+
+      <!-- En-tête page -->
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+        <div>
+          <h3 class="page-titre">Créer un nouveau scrutin</h3>
+          <p class="page-sous-titre">Définissez les paramètres de votre élection électronique.</p>
+        </div>
+        <button class="btn-nouveau-projet">
+          <i class="bi bi-file-earmark-plus me-2"></i>Nouveau Projet
+        </button>
+      </div>
+
+      <!-- Carte formulaire -->
+      <div class="formulaire-card">
+
+        <div class="section-header">
+          <h5 class="section-titre">Configuration générale</h5>
+          <p class="section-desc">Ces informations seront visibles par tous les électeurs autorisés.</p>
+        </div>
+
+        <form [formGroup]="scrutinForm" (ngSubmit)="onSubmit()" novalidate>
+
+          <!-- Titre du scrutin -->
+          <div class="mb-4">
+            <label class="label-field">Titre du scrutin</label>
+            <input
+              type="text"
+              formControlName="titre"
+              class="champ"
+              [class.champ-erreur]="titre.invalid && titre.touched"
+              placeholder="Ex: Élections du Bureau des Étudiants 2024">
+            @if (titre.invalid && titre.touched) {
+              <span class="msg-erreur">
+                @if (titre.errors?.['required'])   { Le titre est requis. }
+                @if (titre.errors?.['minlength'])  { Minimum 5 caractères. }
+              </span>
+            }
+          </div>
+
+          <!-- Description -->
+          <div class="mb-2">
+            <label class="label-field">Description</label>
+            <textarea
+              formControlName="description"
+              class="champ champ-textarea"
+              [class.champ-erreur]="description.invalid && description.touched"
+              rows="5"
+              placeholder="Expliquez l'objectif de ce vote, les règles de participation et les enjeux...">
+            </textarea>
+            @if (description.invalid && description.touched) {
+              <span class="msg-erreur">La description est requise.</span>
+            }
+            <p class="hint-texte">
+              <i class="bi bi-info-circle me-1"></i>
+              La description supporte le formatage simple.
+            </p>
+          </div>
+
+          <!-- Dates -->
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label class="label-field">Date de début</label>
+              <div class="input-date-wrap">
+                <i class="bi bi-calendar3 input-icone"></i>
+                <input
+                  type="date"
+                  formControlName="dateDebut"
+                  class="champ champ-date"
+                  [class.champ-erreur]="dateDebut.invalid && dateDebut.touched">
+              </div>
+              @if (dateDebut.invalid && dateDebut.touched) {
+                <span class="msg-erreur">La date de début est requise.</span>
+              }
+            </div>
+            <div class="col-md-6">
+              <label class="label-field">Date de fin</label>
+              <div class="input-date-wrap">
+                <i class="bi bi-calendar3 input-icone"></i>
+                <input
+                  type="date"
+                  formControlName="dateFin"
+                  class="champ champ-date"
+                  [class.champ-erreur]="dateFin.invalid && dateFin.touched">
+              </div>
+              @if (dateFin.invalid && dateFin.touched) {
+                <span class="msg-erreur">La date de fin est requise.</span>
+              }
+            </div>
+          </div>
+
+          <!-- Type de visibilité -->
+          <div class="mb-4">
+            <label class="label-field">Type de visibilité et accès</label>
+            <div class="row g-3">
+
+              <!-- Scrutin Public -->
+              <div class="col-md-6">
+                <div class="visibilite-card"
+                     [class.actif]="visibilite() === 'public'"
+                     (click)="setVisibilite('public')">
+                  <div class="visibilite-radio">
+                    @if (visibilite() === 'public') {
+                      <i class="bi bi-record-circle-fill text-primary"></i>
+                    } @else {
+                      <i class="bi bi-circle text-muted"></i>
+                    }
+                  </div>
+                  <div class="visibilite-icone" [class.actif]="visibilite() === 'public'">
+                    <i class="bi bi-globe2"></i>
+                  </div>
+                  <div>
+                    <h6 class="visibilite-titre">Scrutin Public</h6>
+                    <p class="visibilite-desc">
+                      Ouvert à tous les utilisateurs enregistrés sur la plateforme Votify.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Scrutin Privé -->
+              <div class="col-md-6">
+                <div class="visibilite-card"
+                     [class.actif]="visibilite() === 'prive'"
+                     (click)="setVisibilite('prive')">
+                  <div class="visibilite-radio">
+                    @if (visibilite() === 'prive') {
+                      <i class="bi bi-record-circle-fill text-primary"></i>
+                    } @else {
+                      <i class="bi bi-circle text-muted"></i>
+                    }
+                  </div>
+                  <div class="visibilite-icone" [class.actif]="visibilite() === 'prive'">
+                    <i class="bi bi-lock"></i>
+                  </div>
+                  <div>
+                    <h6 class="visibilite-titre">Scrutin Privé</h6>
+                    <p class="visibilite-desc">
+                      Accès restreint aux personnes disposant d'une invitation ou d'un code.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bouton créer -->
+          <button type="submit" class="btn-creer-scrutin">
+            Créer le scrutin
+          </button>
+
+          <!-- Lien annuler -->
+          <div class="text-center mt-3">
+            <a href="/admin" class="lien-annuler">Annuler et revenir au tableau de bord</a>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- Mention légale -->
+      <p class="mention-legale text-center mt-4">
+        En créant ce scrutin, vous certifiez que les informations fournies sont exactes.
+        Votify garantit l'anonymat des votes et l'intégrité des résultats par chiffrement asymétrique.
+      </p>
+
+    </main>
+  </div>
+</div>
