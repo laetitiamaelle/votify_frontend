@@ -5,7 +5,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+import { environment } from '../../environments/environment';
 // ── Interfaces ────────────────────────────────────────────
 
 export interface UserProfile {
@@ -96,7 +96,7 @@ export interface NotificationAPI {
 export class VotifyService {
 
   private http = inject(HttpClient);
-  private BASE = 'http://localhost:8000/api';
+  private BASE = environment.apiUrl;
 
   private headers(): HttpHeaders {
     const token = localStorage.getItem('access_token') ?? '';
