@@ -34,7 +34,7 @@ export class DemandeAdminComponent {
       telephone:    ['', Validators.required],
       cni:          ['', Validators.required],
       organisation: ['', Validators.required],
-      motif:        ['', [Validators.required, Validators.minLength(20)]]
+      motif:        ['', [Validators.required, Validators.minLength(5)]]
     });
   }
 
